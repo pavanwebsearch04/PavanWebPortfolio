@@ -1,0 +1,528 @@
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/jetbrains-mono/400.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0c;
+  --foreground: #f2efe8;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* inner pages start straight with their first section: clear the fixed header */
+main[data-page="inner"] > section:first-of-type {
+  padding-top: 9rem;
+}
+@media (min-width: 768px) {
+  main[data-page="inner"] > section:first-of-type {
+    padding-top: 10.5rem;
+  }
+}
+
+/* keeps the fixed header from covering a section's heading when a nav
+   link jumps to it */
+section[id] {
+  scroll-margin-top: 88px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+/* applied while the mobile menu overlay is open */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* Hide the native cursor only where the custom cursor takes over: fine
+   pointer (mouse) devices at md+ widths, matching the custom cursor's own
+   `hidden md:block` breakpoint so narrow desktop windows keep a visible
+   cursor. */
+@media (pointer: fine) and (min-width: 768px) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none;
+  }
+  /* text fields keep the native text caret; the spider steps aside there */
+  .custom-cursor-active textarea,
+  .custom-cursor-active input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]) {
+    cursor: text;
+  }
+}
+
+/* Extremely subtle film grain, used as a background-image data URI so it
+   never needs a network request. */
+.film-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+}
+
+:focus-visible {
+  outline: 2px solid #ee6c5c;
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Section surfaces: the page stays near-black, but each section gets a
+   barely-lighter tone that fades in and out at its edges, so there are
+   no hard bands and the continuous web behind them stays visible.     */
+/* ------------------------------------------------------------------ */
+.surface {
+  position: relative;
+}
+.surface::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(242, 239, 232, 0.16) 30%, rgba(167, 58, 47, 0.28) 50%, rgba(242, 239, 232, 0.16) 70%, transparent);
+}
+.surface-ink {
+  background: linear-gradient(180deg, rgba(17, 17, 21, 0) 0%, rgba(17, 17, 21, 0.72) 14%, rgba(17, 17, 21, 0.72) 86%, rgba(17, 17, 21, 0) 100%);
+}
+.surface-graphite {
+  background: linear-gradient(180deg, rgba(25, 25, 30, 0) 0%, rgba(25, 25, 30, 0.78) 14%, rgba(25, 25, 30, 0.78) 86%, rgba(25, 25, 30, 0) 100%);
+}
+.surface-warm {
+  background: linear-gradient(180deg, rgba(30, 22, 23, 0) 0%, rgba(30, 22, 23, 0.7) 14%, rgba(30, 22, 23, 0.7) 86%, rgba(30, 22, 23, 0) 100%);
+}
+
+/* Content panel: slightly lighter graphite with a clear hairline border. */
+.panel {
+  background: linear-gradient(180deg, rgba(32, 32, 38, 0.88), rgba(25, 25, 30, 0.9));
+  border: 1px solid rgba(242, 239, 232, 0.14);
+}
+
+/* Experience card: an open card picks up a restrained crimson edge. */
+.panel.experience-card {
+  transition: border-color 0.35s ease, background-color 0.35s ease;
+}
+.panel.experience-card[data-expanded="true"] {
+  border-color: rgba(238, 108, 92, 0.5);
+  background: linear-gradient(180deg, rgba(38, 31, 34, 0.92), rgba(28, 25, 29, 0.94));
+}
+
+/* ------------------------------------------------------------------ */
+/* Interactive web: highlight applied to whichever element currently has
+   a web formed around it (set by WebInteractionProvider).              */
+/* ------------------------------------------------------------------ */
+[data-web-active="true"] {
+  box-shadow: 0 0 0 1px rgba(238, 108, 92, 0.42);
+  transition: box-shadow 0.25s ease;
+}
+/* keyboard focus already has a clear outline; do not stack a second ring */
+[data-web-active="true"]:focus-visible {
+  box-shadow: none;
+}
+input[data-web-active="true"],
+textarea[data-web-active="true"] {
+  box-shadow: 0 2px 0 0 rgba(238, 108, 92, 0.75);
+}
+
+/* ------------------------------------------------------------------ */
+/* Spiders: leg gait only runs while the spider is walking.             */
+/* ------------------------------------------------------------------ */
+.spider-gait-a,
+.spider-gait-b {
+  transform-origin: 0 0;
+}
+@keyframes spider-gait {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+.spider-walking .spider-gait-a {
+  animation: spider-gait 0.32s ease-in-out infinite;
+}
+.spider-walking .spider-gait-b {
+  animation: spider-gait 0.32s ease-in-out infinite;
+  animation-delay: -0.16s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spider-walking .spider-gait-a,
+  .spider-walking .spider-gait-b {
+    animation: none;
+  }
+}
+
+/* Small outlined button used by the Lab demos. */
+.lab-btn {
+  border: 1px solid rgba(242, 239, 232, 0.4);
+  background: rgba(242, 239, 232, 0.05);
+  padding: 0.65rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: #f2efe8;
+  transition: border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.lab-btn:hover:not(:disabled) {
+  border-color: rgba(238, 108, 92, 0.75);
+  background: rgba(242, 239, 232, 0.1);
+}
+.lab-btn[aria-pressed="true"] {
+  border-color: rgba(238, 108, 92, 0.65);
+  background: rgba(167, 58, 47, 0.18);
+}
+.lab-btn:disabled {
+  opacity: 0.45;
+}
+
+/* Cursor spider: same gait utility as the page spiders, plus a faint body
+   sway while it walks. */
+@keyframes cursor-spider-sway {
+  0%,
+  100% {
+    transform: rotate(-2.2deg);
+  }
+  50% {
+    transform: rotate(2.2deg);
+  }
+}
+.cursor-spider-body {
+  transform-origin: 0 0;
+}
+.cursor-spider-body.spider-walking {
+  animation: cursor-spider-sway 0.32s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-spider-body.spider-walking {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Skill chips: irregular, web-cut outlines. A border-coloured polygon
+   sits behind an inset fill polygon, so the angled corners keep a clean
+   1px edge without needing clip-path on the text itself.               */
+/* ------------------------------------------------------------------ */
+.skill-chip {
+  position: relative;
+  isolation: isolate;
+  --chip-border: rgba(242, 239, 232, 0.32);
+  --chip-fill: #1d1d24;
+  /* gentle spring: a slight overshoot, no bounce */
+  transition: transform 0.38s cubic-bezier(0.34, 1.45, 0.64, 1), filter 0.3s ease;
+  will-change: transform;
+}
+.skill-chip::before,
+.skill-chip::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+}
+.skill-chip::before {
+  inset: 0;
+  background: var(--chip-border);
+  clip-path: var(--chip-shape);
+  transition: background 0.25s ease;
+}
+.skill-chip::after {
+  inset: 1px;
+  background: var(--chip-fill);
+  clip-path: var(--chip-shape-inner);
+  transition: background 0.25s ease;
+}
+.skill-chip[data-shape="a"] {
+  --chip-shape: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  --chip-shape-inner: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+}
+.skill-chip[data-shape="b"] {
+  --chip-shape: polygon(9px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 12px) 100%, 0 100%, 0 7px);
+  --chip-shape-inner: polygon(8px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 11px) 100%, 0 100%, 0 6px);
+}
+.skill-chip[data-shape="c"] {
+  --chip-shape: polygon(0 6px, 12px 0, 100% 0, 100% 100%, calc(100% - 7px) 100%, 0 calc(100% - 11px));
+  --chip-shape-inner: polygon(0 5px, 11px 0, 100% 0, 100% 100%, calc(100% - 6px) 100%, 0 calc(100% - 10px));
+}
+.skill-chip[data-state="related"] {
+  --chip-border: rgba(238, 108, 92, 0.55);
+  --chip-fill: #251e22;
+}
+.skill-chip[data-state="active"],
+.skill-chip[data-state="selected"] {
+  --chip-border: #ee6c5c;
+  --chip-fill: #2c2428;
+  transform: translateY(-2px) scale(1.025);
+  filter: drop-shadow(0 6px 12px rgba(167, 58, 47, 0.22));
+}
+.skill-chip[data-state="selected"] {
+  --chip-fill: #31262b;
+  filter: drop-shadow(0 6px 14px rgba(167, 58, 47, 0.32));
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-chip {
+    transition: filter 0.2s ease;
+  }
+  .skill-chip[data-state="active"],
+  .skill-chip[data-state="selected"] {
+    transform: none;
+  }
+}
+/* the web highlight outline would fight the chip's own cut-corner border */
+.skill-chip[data-web-active="true"] {
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Skills web: one orb web behind the skill nodes. Strands step back
+   while a node is active; the active node's routes draw outward and a
+   small signal travels along each. Ambient motion is one shared sway.  */
+/* ------------------------------------------------------------------ */
+.skills-web .sw-strand {
+  transition: opacity 0.45s ease;
+}
+.skills-web[data-active="true"] .sw-strand {
+  opacity: 0.4;
+}
+.skills-web[data-active="true"] .sw-decor {
+  opacity: 0.4;
+}
+.skills-web .sw-decor {
+  transition: opacity 0.45s ease;
+}
+
+@keyframes sw-sway {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(1.6px, -1.2px);
+  }
+}
+.skills-web[data-ambient="true"] .sw-sway {
+  animation: sw-sway 24s ease-in-out infinite alternate;
+}
+
+@keyframes sw-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.skills-web .sw-route {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sw-draw 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* a short bright dash that rides each active route, one pass at a time */
+@keyframes sw-signal {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.95;
+  }
+  85% {
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+.skills-web .sw-signal {
+  stroke-dasharray: 0.06 0.94;
+  opacity: 0;
+  animation: sw-signal 2.6s linear infinite;
+}
+.skills-web .sw-ambient {
+  stroke-dasharray: 0.05 0.95;
+  opacity: 0;
+  animation: sw-signal 3.4s linear 1 both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skills-web .sw-route {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .skills-web .sw-signal,
+  .skills-web .sw-ambient {
+    display: none;
+  }
+}
+
+/* skill chip emphasis on the web */
+.skill-chip[data-core="true"] {
+  --chip-border: rgba(242, 239, 232, 0.52);
+}
+.skill-chip[data-hub="true"] {
+  --chip-border: rgba(238, 108, 92, 0.5);
+  --chip-fill: #241d20;
+}
+.skill-chip[data-dim="true"]:not([data-state="selected"]) {
+  opacity: 0.62;
+}
+.skill-chip {
+  transition: transform 0.38s cubic-bezier(0.34, 1.45, 0.64, 1), filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* ------------------------------------------------------------------ */
+/* Lab: strand playground + web walker                                  */
+/* ------------------------------------------------------------------ */
+.lab-btn {
+  min-height: 44px;
+}
+.lab-btn:focus-visible {
+  outline: 2px solid #ee6c5c;
+  outline-offset: 2px;
+}
+.lab-node-focus {
+  stroke: transparent;
+  stroke-width: 2;
+}
+.lab-node:focus-visible .lab-node-focus {
+  stroke: #ee6c5c;
+}
+
+@keyframes lab-ripple {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0.95;
+  }
+  55% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+.lab-ripple {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  animation: lab-ripple 1.1s ease-out both;
+}
+@keyframes lab-node-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.lab-node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: lab-node-pulse 0.9s ease-out both;
+}
+@keyframes lab-fresh {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.lab-fresh {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lab-fresh 1.1s ease-out both;
+}
+@keyframes lab-travel {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -1;
+    opacity: 0;
+  }
+}
+.lab-travel {
+  stroke-dasharray: 0.28 0.72;
+  opacity: 0;
+  animation: lab-travel 1.5s ease-in-out 2 both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-ripple {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 0.85;
+  }
+  .lab-node-pulse,
+  .lab-fresh,
+  .lab-travel {
+    animation: none;
+    display: none;
+  }
+}
+
+/* native select used by the Web Walker controls */
+.lab-select {
+  min-height: 44px;
+  border: 1px solid rgba(242, 239, 232, 0.4);
+  background: #19191e;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  color: #f2efe8;
+}
+.lab-select:hover {
+  border-color: rgba(238, 108, 92, 0.75);
+}
+.lab-select:focus-visible {
+  outline: 2px solid #ee6c5c;
+  outline-offset: 2px;
+}

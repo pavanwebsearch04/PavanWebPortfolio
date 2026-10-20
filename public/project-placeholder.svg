@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400">
+  <rect width="640" height="400" fill="#14141a"/>
+  <g opacity="0.55" font-family="monospace" font-size="26" fill="#8b8a90">
+    <text x="60" y="150">&lt;/&gt;</text>
+  </g>
+  <g stroke="#2a2a30" stroke-width="1.5" opacity="0.7">
+    <line x1="40" y1="200" x2="600" y2="200"/>
+    <line x1="40" y1="240" x2="480" y2="240"/>
+    <line x1="40" y1="280" x2="540" y2="280"/>
+  </g>
+  <circle cx="320" cy="200" r="90" fill="none" stroke="#a73a2f" stroke-width="1" opacity="0.35"/>
+</svg>
