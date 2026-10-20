@@ -79,11 +79,11 @@ export default function Hero() {
         />
       </div>
 
-      <div className="relative z-10 flex w-full flex-col justify-center px-6 pb-10 pt-28 md:w-[45%] md:px-14 md:pb-16 md:pt-28 lg:pl-20 lg:pr-8">
+      <div className="relative z-10 flex w-full flex-col justify-center px-6 pb-10 pt-28 md:w-[45%] md:px-14 md:pb-16 md:pt-28 lg:w-[50%] lg:pl-16 lg:pr-6">
         <HeroContent scrollYProgress={scrollYProgress} parallaxX={parallaxX} parallaxY={parallaxY} />
       </div>
 
-      <div className="relative z-10 w-full md:w-[55%]">
+      <div className="relative z-10 w-full md:w-[55%] lg:w-[50%]">
         <HeroVisual
           pointerX={pointerX}
           pointerY={pointerY}
