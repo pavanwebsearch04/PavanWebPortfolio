@@ -526,3 +526,74 @@ textarea[data-web-active="true"] {
   outline: 2px solid #ee6c5c;
   outline-offset: 2px;
 }
+
+/* ---- hero 3D portrait: float, particles, light trails ---- */
+.hero3d-scene {
+  perspective: 1100px;
+  perspective-origin: 50% 45%;
+}
+.hero3d-stage {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.hero3d-panel {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+@keyframes hero3d-float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -10px;
+  }
+}
+@keyframes hero3d-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: var(--p-o, 0.8);
+  }
+  100% {
+    transform: translate3d(var(--p-dx, 8px), var(--p-dy, -60px), 0);
+    opacity: 0;
+  }
+}
+@keyframes hero3d-trail {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  30%,
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero3d-float {
+    animation: hero3d-float 7s ease-in-out infinite;
+  }
+  .hero3d-particle {
+    animation: hero3d-drift var(--p-t, 9s) linear var(--p-d, 0s) infinite;
+  }
+  .hero3d-trail {
+    animation: hero3d-trail 6.5s ease-in-out var(--p-d, 0s) infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero3d-particle {
+    opacity: 0.5;
+  }
+  .hero3d-trail {
+    opacity: 0.5;
+  }
+}
