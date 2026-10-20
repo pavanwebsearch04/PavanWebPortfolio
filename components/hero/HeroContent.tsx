@@ -87,9 +87,9 @@ export default function HeroContent({
           data-hero-avoid=""
           className="max-w-md text-balance font-body text-body text-paper-body"
         >
-          I&rsquo;m Pavan Vasita, a Web Developer specializing in WordPress and modern web
-          technologies. I build responsive websites, thoughtful interfaces, and practical
-          digital solutions that bring ideas to life.
+          I&rsquo;m Pavan Vasita, a Web Developer specializing in PHP, MySQL, React,
+          WordPress, and modern web technologies. I build responsive websites, clean
+          interfaces, and practical digital solutions that bring ideas to life.
         </motion.p>
       </ParallaxLayer>
 
