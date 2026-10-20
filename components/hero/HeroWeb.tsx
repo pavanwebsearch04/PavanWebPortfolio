@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useOnScreen } from "@/hooks/useOnScreen";
+import { useIsMobileViewport } from "@/hooks/useIsMobileViewport";
 import {
   motion,
   MotionValue,
@@ -71,6 +72,7 @@ export default function HeroWeb({
   const svgRef = useRef<SVGSVGElement>(null);
   // idle sway only runs while the hero is actually near the viewport
   const onScreen = useOnScreen(svgRef, 120);
+  const isMobile = useIsMobileViewport();
   const idle = interactive && onScreen;
   const geometry = useMemo(() => generateWebGeometry(1337, 22), []);
   const [ripples, setRipples] = useState<Ripple[]>([]);
@@ -116,7 +118,9 @@ export default function HeroWeb({
     <svg
       ref={svgRef}
       viewBox={`0 0 ${WEB_CANVAS.width} ${WEB_CANVAS.height}`}
-      preserveAspectRatio="none"
+      // desktop stretches the wide canvas to the hero; on the tall mobile hero that
+      // would squash rings into tangled ellipses, so keep proportions and crop instead
+      preserveAspectRatio={isMobile ? "xMidYMid slice" : "none"}
       className="absolute inset-0 h-full w-full overflow-visible"
       aria-hidden
     >
