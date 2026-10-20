@@ -85,7 +85,7 @@ export default function HeroContent({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 1.5 }}
           data-hero-avoid=""
-          className="max-w-md text-balance font-body text-body text-paper-body"
+          className="max-w-xl text-pretty font-body text-body text-paper-body"
         >
           I&rsquo;m Pavan Vasita, a Web Developer specializing in PHP, MySQL, React,
           WordPress, and modern web technologies. I build responsive websites, clean
