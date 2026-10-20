@@ -125,7 +125,7 @@ export default function HeroContent({
           className="flex flex-col gap-1.5 font-mono text-label tracking-[0.1em] text-paper-dim"
         >
           <ul className="flex flex-wrap gap-x-2 gap-y-1" aria-label="Core technologies">
-            {["NEXT.JS", "TYPESCRIPT", "REACT", "WORDPRESS"].map((t, i) => (
+            {["NEXT.JS", "TYPESCRIPT", "REACT", "WORDPRESS", "PHP", "MYSQL", "SQL"].map((t, i) => (
               <li key={t} className="whitespace-nowrap">
                 {i > 0 && <span aria-hidden="true" className="mr-2">·</span>}
                 {t}
