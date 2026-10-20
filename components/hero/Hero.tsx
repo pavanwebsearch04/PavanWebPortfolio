@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsCoarsePointer } from "@/hooks/useIsCoarsePointer";
 import { WEB_CANVAS } from "@/lib/webData";
@@ -53,8 +53,6 @@ export default function Hero() {
     pointerYRaw.set(-1000);
   }, [pointerXRaw, pointerYRaw]);
 
-  const scrollThreadOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-
   // proximity from 0..1 to the portrait anchor, used to give the portrait's
   // border threads a stronger reaction when the cursor is nearby
   const nearPortrait = useTransform([pointerX, pointerY], (latest) => {
@@ -96,21 +94,6 @@ export default function Hero() {
           interactive={interactive}
         />
       </div>
-
-      {/* scroll indicator */}
-      <motion.div
-        style={{ opacity: scrollThreadOpacity }}
-        data-hero-avoid="12"
-        className="pointer-events-none absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
-      >
-        <span className="font-mono text-label tracking-[0.2em] text-paper-dim">SCROLL</span>
-        <motion.span
-          className="h-10 w-px bg-gradient-to-b from-paper-muted/60 to-transparent"
-          animate={interactive ? { scaleY: [1, 0.6, 1] } : undefined}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
-
     </section>
   );
 }
