@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="A code badge and spider hanging in a crimson spider web">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="52%" r="60%">
+      <stop offset="0" stop-color="#d4483b" stop-opacity=".6"/>
+      <stop offset=".5" stop-color="#a73a2f" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#0a0a0c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26262d"/><stop offset="1" stop-color="#15151a"/>
+    </linearGradient>
+    <linearGradient id="e" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ee6c5c" stop-opacity=".95"/><stop offset="1" stop-color="#a73a2f" stop-opacity=".4"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="#0a0a0c"/>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <g fill="none" stroke="#edeae3" stroke-opacity=".16" stroke-width="1.6" stroke-linecap="round">
+    <path d="M300 300L0 300M300 300L60 90M300 300L300 0M300 300L540 60M300 300L600 300M300 300L560 540M300 300L300 600M300 300L50 520"/>
+    <path d="M300 300m-70 0l35 -60 60 -30 70 20 40 70 -20 70 -70 50 -70 -10 -50 -40z"/>
+    <path d="M300 300m-130 0l60 -110 110 -60 130 30 70 130 -40 130 -130 90 -130 -20 -90 -80z"/>
+    <path d="M300 300m-200 0l90 -170 160 -90 190 50 100 190 -70 190 -190 130 -190 -30 -130 -120z"/>
+  </g>
+  <g>
+    <rect x="170" y="190" width="260" height="230" rx="30" fill="url(#p)" stroke="url(#e)" stroke-width="3"/>
+    <g fill="none" stroke="#ee6c5c" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M258 262l-48 53 48 53"/><path d="M342 262l48 53-48 53"/>
+    </g>
+    <path d="M318 248l-36 134" stroke="#edeae3" stroke-opacity=".75" stroke-width="16" stroke-linecap="round" fill="none"/>
+  </g>
+  <line x1="300" y1="-10" x2="300" y2="92" stroke="#edeae3" stroke-opacity=".5" stroke-width="2.5"/>
+  <g transform="translate(300 112)">
+    <g stroke="#edeae3" stroke-opacity=".8" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M-9 -4l-30 -16 -16 16M-10 3l-36 -2 -16 16M-10 9l-34 14 -12 22M-8 15l-22 25 -5 22"/>
+      <path d="M9 -4l30 -16 16 16M10 3l36 -2 16 16M10 9l34 14 12 22M8 15l22 25 5 22"/>
+    </g>
+    <ellipse cx="0" cy="16" rx="17" ry="21" fill="#d4483b"/>
+    <ellipse cx="0" cy="-7" rx="11" ry="11" fill="#a73a2f"/>
+    <circle cx="-4.5" cy="-9" r="2.2" fill="#edeae3"/><circle cx="4.5" cy="-9" r="2.2" fill="#edeae3"/>
+  </g>
+</svg>

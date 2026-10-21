@@ -1,11 +1,18 @@
-// Portrait — file lives in /public. One source feeds the Home hero, the Home
-// About section and the /about page (they share AboutSection).
+// Hero visual and About avatar — files live in /public (SVG artwork, no photos).
 export const heroImages = {
+  // About section avatar.
   portrait: {
-    src: "/living-web-portrait.webp",
-    alt: "Pavan Vasita wearing an original web-tech superhero suit in a cinematic spider-web environment",
+    src: "/hero-developer-portrait.webp",
+    alt: "Pavan Vasita, full stack developer, standing with arms crossed among floating code windows and tech icons in a crimson-lit workspace",
     width: 1122,
     height: 1402,
+  },
+  // Home hero (right-side visual): original artwork.
+  heroVisual: {
+    src: "/hero-web-dev-visual.svg",
+    alt: "A code editor and browser preview floating in a crimson spider web, with React, Next.js, PHP, MySQL, WordPress and TypeScript labels",
+    width: 800,
+    height: 1000,
   },
 };
 

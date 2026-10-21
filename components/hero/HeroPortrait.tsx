@@ -160,8 +160,8 @@ export default function HeroPortrait({
             className="hero3d-panel overflow-hidden rounded-[3px] border border-crimson-bright/80 shadow-[0_0_0_1px_rgba(212,72,59,0.25),0_0_22px_rgba(212,72,59,0.45),0_30px_60px_-20px_rgba(0,0,0,0.85)]"
           >
             <Image
-              src={imageFailed ? FALLBACK_SRC : heroImages.portrait.src}
-              alt={heroImages.portrait.alt}
+              src={imageFailed ? FALLBACK_SRC : heroImages.heroVisual.src}
+              alt={heroImages.heroVisual.alt}
               fill
               priority
               unoptimized={imageFailed}
