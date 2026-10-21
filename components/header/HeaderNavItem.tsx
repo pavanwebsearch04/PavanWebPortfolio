@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import SiteLink from "@/components/ui/SiteLink";
+import { EASE_OUT_CSS } from "@/lib/motion";
 
 export interface NavItem {
   id: string;
@@ -12,10 +12,10 @@ export interface NavItem {
   href: string;
 }
 
-// Tiny asymmetric active-page indicator — the same radiating-line web-node
-// glyph used site-wide, so it reads as unmistakably not a circle even at
-// small size. The "gentle pulse" is a breathing opacity, not a ring.
-function ActiveNode() {
+// Tiny asymmetric web-node marker (radiating lines, never a plain circle).
+// One instance is shared by the whole nav through `layoutId`, so it glides to
+// the hovered link and settles back on the current page's link.
+export function NavDot() {
   const arms = [
     { x2: -5, y2: -3 },
     { x2: 5, y2: -4 },
@@ -24,21 +24,18 @@ function ActiveNode() {
   ];
   return (
     <motion.svg
+      layoutId="nav-dot"
+      aria-hidden
       width="14"
       height="14"
       viewBox="-7 -7 14 14"
-      className="overflow-visible"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: [0.75, 1, 0.75] }}
-      transition={{
-        scale: { duration: 0.3 },
-        opacity: { duration: 2.6, repeat: Infinity, ease: "easeInOut" },
-      }}
+      className="pointer-events-none absolute -left-4 top-1/2 -mt-[7px] overflow-visible"
+      transition={{ type: "spring", stiffness: 380, damping: 30 }}
     >
       {arms.map((a, i) => (
         <line key={i} x1={0} y1={0} x2={a.x2} y2={a.y2} stroke="#D4483B" strokeWidth={1} strokeLinecap="round" />
       ))}
-      <circle r={1.2} fill="#D4483B" />
+      <circle r={1.4} fill="#D4483B" />
     </motion.svg>
   );
 }
@@ -46,66 +43,56 @@ function ActiveNode() {
 export default function HeaderNavItem({
   item,
   active,
+  showDot,
+  onHover,
   onClick,
 }: {
   item: NavItem;
   active: boolean;
+  showDot?: boolean;
+  onHover?: (hovered: boolean) => void;
   onClick?: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
+  const roll = `transform 400ms ${EASE_OUT_CSS}`;
 
   return (
     <SiteLink
       href={item.href}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
+      onMouseEnter={() => onHover?.(true)}
+      onMouseLeave={() => onHover?.(false)}
+      onFocus={() => onHover?.(true)}
+      onBlur={() => onHover?.(false)}
       aria-current={active ? "page" : undefined}
-      className="group relative flex items-center gap-1.5 rounded-sm px-0.5 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crimson-bright"
+      className="group relative flex items-center rounded-sm px-0.5 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crimson-bright"
     >
-      {active && <ActiveNode />}
+      {showDot && <NavDot />}
 
-      <span className="relative flex items-center gap-1.5 overflow-hidden pr-1">
-        <AnimatePresence initial={false}>
-          {hovered && (
-            <motion.span
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: "auto", opacity: 1 }}
-              exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="whitespace-nowrap font-mono text-[0.75rem] text-crimson-text"
-            >
-              {item.index} /
-            </motion.span>
-          )}
-        </AnimatePresence>
-
-        <motion.span
-          animate={{ x: hovered ? 3 : 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 22 }}
-          className={`font-mono text-nav transition-colors ${
-            active || hovered ? "text-paper" : "text-paper-body"
+      {/* text roll: the label slides up, a duplicate slides in from below */}
+      <span className="relative block overflow-hidden">
+        <span
+          className={`block font-mono text-nav group-hover:-translate-y-full group-focus-visible:-translate-y-full ${
+            active ? "text-paper" : "text-paper-body"
           }`}
+          style={{ transition: roll }}
         >
           {item.label}
-        </motion.span>
+        </span>
+        <span
+          aria-hidden
+          className="absolute inset-x-0 top-full block font-mono text-nav text-crimson-text group-hover:-translate-y-full group-focus-visible:-translate-y-full"
+          style={{ transition: roll }}
+        >
+          {item.label}
+        </span>
       </span>
 
-      {/* thin connecting strand that briefly forms on hover */}
-      <svg width="28" height="8" viewBox="0 0 28 8" className="absolute -bottom-0.5 left-0 overflow-visible">
-        <motion.path
-          d="M0 1 Q 14 7, 28 2"
-          fill="none"
-          stroke="#D4483B"
-          strokeWidth={0.8}
-          strokeLinecap="round"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: hovered ? 1 : 0, opacity: hovered ? 0.7 : 0 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        />
-      </svg>
+      {/* underline draws left to right on enter and exits to the right on leave */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0.5 bottom-0.5 h-px origin-right scale-x-0 bg-crimson-bright group-hover:origin-left group-hover:scale-x-100 group-focus-visible:origin-left group-focus-visible:scale-x-100"
+        style={{ transition: roll }}
+      />
     </SiteLink>
   );
 }

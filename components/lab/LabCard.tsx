@@ -5,6 +5,11 @@ import { motion } from "framer-motion";
 import { hashString } from "@/lib/webGeometry";
 import WebCorner from "@/components/web/WebCorner";
 
+const ITEM = {
+  hidden: { opacity: 0, y: 22 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
+};
+
 export interface InfoSection {
   id: string;
   /** button label, e.g. "How to Play" */
@@ -83,14 +88,14 @@ export default function LabCard({
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial="hidden"
+      whileInView="shown"
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ staggerChildren: 0.09 }}
       aria-labelledby={`lab-${index}`}
       className="panel relative flex flex-col gap-5 p-4 sm:p-5 md:p-8"
     >
-      <header className="flex flex-col gap-3">
+      <motion.header variants={ITEM} className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-label tracking-[0.12em]">
           <span className="text-crimson-text">EXPERIMENT {index}</span>
           <span className="border border-paper/20 px-2 py-0.5 text-paper-muted">{category.toUpperCase()}</span>
@@ -103,12 +108,14 @@ export default function LabCard({
           <span className="mr-2 font-mono text-label tracking-[0.12em] text-crimson-text">TO PLAY</span>
           {quickStart}
         </p>
-      </header>
+      </motion.header>
 
-      <div className="relative min-w-0">{children}</div>
+      <motion.div variants={ITEM} className="relative min-w-0">
+        {children}
+      </motion.div>
 
       {/* secondary information */}
-      <div className="flex flex-col gap-3 border-t border-paper/10 pt-4">
+      <motion.div variants={ITEM} className="flex flex-col gap-3 border-t border-paper/10 pt-4">
         <div className="flex flex-wrap gap-2" role="group" aria-label={`${title}: more information`}>
           {info.map((s) => {
             const isOpen = open === s.id;
@@ -122,16 +129,25 @@ export default function LabCard({
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => toggle(s.id)}
-                className={`inline-flex min-h-[44px] items-center gap-2 border px-3 py-2 font-mono text-label tracking-[0.1em] transition-colors ${
+                className={`relative inline-flex min-h-[44px] items-center gap-2 border px-3 py-2 font-mono text-label tracking-[0.1em] transition-colors ${
                   isOpen
-                    ? "border-crimson-bright/70 bg-crimson/20 text-paper"
+                    ? "border-crimson-bright/70 text-paper"
                     : "border-paper/25 bg-paper/[0.04] text-paper-body hover:border-paper/50 hover:text-paper"
                 }`}
               >
-                <span aria-hidden="true" className="w-3 text-center text-crimson-text">
+                {/* one shared pill slides to whichever tab is open */}
+                {isOpen && (
+                  <motion.span
+                    layoutId={`${uid}-pill`}
+                    aria-hidden
+                    className="absolute inset-0 bg-crimson/20"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                )}
+                <span aria-hidden="true" className="relative w-3 text-center text-crimson-text">
                   {isOpen ? "−" : "+"}
                 </span>
-                {s.label.toUpperCase()}
+                <span className="relative">{s.label.toUpperCase()}</span>
               </button>
             );
           })}
@@ -167,7 +183,7 @@ export default function LabCard({
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       <WebCorner corner="tr" size={64} seed={hashString(title)} opacity={0.24} className="!-right-1 !-top-1" />
     </motion.article>

@@ -69,17 +69,39 @@ export default function WebsiteCard({
   const wrapRef = useRef<HTMLDivElement>(null);
   const shown = useInViewOnce(wrapRef);
   const [imageFailed, setImageFailed] = useState(false);
+  const tiltRef = useRef<HTMLDivElement>(null);
   const v = VARIANT[variant];
+
+  // 3D tilt toward the cursor (max 8deg) plus a glare that follows it. Fine
+  // pointers only; the CSS vars are written straight to the node, no re-render.
+  const onTilt = (e: React.PointerEvent) => {
+    const el = tiltRef.current;
+    if (!el || e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--ry", `${((px - 0.5) * 16).toFixed(2)}deg`);
+    el.style.setProperty("--rx", `${((0.5 - py) * 16).toFixed(2)}deg`);
+    el.style.setProperty("--gx", `${(px * 100).toFixed(1)}%`);
+    el.style.setProperty("--gy", `${(py * 100).toFixed(1)}%`);
+  };
+  const resetTilt = () => {
+    const el = tiltRef.current;
+    if (!el) return;
+    el.style.setProperty("--ry", "0deg");
+    el.style.setProperty("--rx", "0deg");
+  };
   const number = String(rank).padStart(2, "0");
   const image = site.image;
   const showDetails = variant === "archive";
 
   return (
+    // the outer node stays unclipped so the in-view observer can see it; the
+    // inner one carries the clip-path reveal
+    <div ref={wrapRef} data-shown={shown} className="group/reveal">
     <div
-      ref={wrapRef}
-      data-shown={shown}
       style={{ transitionDelay: `${delay}s` }}
-      className={`translate-y-8 opacity-0 transition-[opacity,transform] duration-[900ms] ${EASE} data-[shown=true]:translate-y-0 data-[shown=true]:opacity-100 motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none`}
+      className={`[clip-path:inset(100%_-24px_-24px_-24px)] transition-[clip-path] duration-[900ms] ${EASE} group-data-[shown=true]/reveal:[clip-path:inset(-24px)] motion-reduce:[clip-path:inset(-24px)] motion-reduce:transition-none`}
     >
       <a
         href={site.url}
@@ -91,10 +113,16 @@ export default function WebsiteCard({
         onMouseLeave={() => onActivate(null)}
         onFocus={() => onActivate(site.slug)}
         onBlur={() => onActivate(null)}
+        onPointerMove={onTilt}
+        onPointerLeave={resetTilt}
+        data-cursor="view"
         className="group relative block"
       >
         {/* browser frame */}
-        <div className="relative">
+        <div
+          ref={tiltRef}
+          className="relative [transform:perspective(1000px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none"
+        >
           {/* ghost frame: slides out diagonally on hover/focus for a layered feel */}
           <span
             aria-hidden
@@ -125,17 +153,22 @@ export default function WebsiteCard({
             {/* screenshot — 16:10 reserves the space before the image loads */}
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-paper/15 bg-ink-graphite">
               {image && !imageFailed ? (
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  sizes={v.sizes}
-                  priority={eager}
-                  loading={eager ? undefined : "lazy"}
-                  onError={() => setImageFailed(true)}
-                  style={{ objectPosition: image.position }}
-                  className={`object-cover transition-transform duration-[900ms] ${EASE} will-change-transform group-hover:scale-[1.045] group-focus-visible:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
-                />
+                // scale 1.3 -> 1 as the card is revealed on scroll
+                <div
+                  className={`absolute inset-0 scale-[1.3] transition-transform duration-[1200ms] ${EASE} group-data-[shown=true]/reveal:scale-100 motion-reduce:scale-100 motion-reduce:transition-none`}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes={v.sizes}
+                    priority={eager}
+                    loading={eager ? undefined : "lazy"}
+                    onError={() => setImageFailed(true)}
+                    style={{ objectPosition: image.position }}
+                    className={`object-cover transition-transform duration-[600ms] ${EASE} will-change-transform group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
+                  />
+                </div>
               ) : (
                 // no capture available: an honest typographic stand-in, never a stock photo
                 <div
@@ -167,6 +200,23 @@ export default function WebsiteCard({
                 className={`pointer-events-none absolute left-0 top-0 h-px w-full origin-left scale-x-0 bg-crimson-bright transition-transform duration-500 ${EASE} group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none`}
               />
 
+              {/* glare that follows the cursor */}
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 motion-reduce:hidden"
+                style={{
+                  background:
+                    "radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,0.22), transparent 55%)",
+                }}
+              />
+              {/* category tag slides up from the bottom edge */}
+              <span
+                aria-hidden
+                className={`pointer-events-none absolute bottom-3 left-3 max-w-[70%] translate-y-[160%] truncate border border-crimson-bright/50 bg-ink/85 px-2.5 py-1 font-mono text-label uppercase tracking-[0.1em] text-paper transition-transform duration-500 ${EASE} group-hover:translate-y-0 group-focus-visible:translate-y-0 motion-reduce:translate-y-0 motion-reduce:transition-none`}
+              >
+                {site.category}
+              </span>
+
               {/* launch glyph */}
               <span
                 aria-hidden
@@ -176,6 +226,22 @@ export default function WebsiteCard({
               </span>
             </div>
           </div>
+
+          {/* crimson web-strand border drawn around the frame on hover */}
+          <svg aria-hidden className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+            <rect
+              x="0.5"
+              y="0.5"
+              width="99.9%"
+              height="99.9%"
+              pathLength={1}
+              fill="none"
+              stroke="#D4483B"
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+              className="card-strand"
+            />
+          </svg>
 
           <WebCorner
             corner="tr"
@@ -245,6 +311,7 @@ export default function WebsiteCard({
           </span>
         </div>
       </a>
+    </div>
     </div>
   );
 }

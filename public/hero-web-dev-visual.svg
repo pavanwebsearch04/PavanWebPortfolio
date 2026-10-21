@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Web developer workspace with React, Next.js, PHP, MySQL, WordPress and TypeScript, hanging in a crimson spider web">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Web developer workspace: a code editor and browser window hanging in a crimson spider web">
   <defs>
     <radialGradient id="glow" cx="50%" cy="46%" r="62%">
       <stop offset="0" stop-color="#d4483b" stop-opacity=".55"/>
@@ -143,38 +143,6 @@
       <path d="M-5 12l5 8 5-8z" fill="#0a0a0c" opacity=".6"/>
       <circle cx="-4" cy="-8" r="2" fill="#edeae3"/><circle cx="4" cy="-8" r="2" fill="#edeae3"/>
     </g>
-  </g>
-
-  <!-- technology chips -->
-  <g class="f1" style="animation-delay:0s">
-    <rect x="60" y="120" width="118" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="82" cy="144" r="5" fill="#d4483b"/>
-    <text x="98" y="151" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">React</text>
-  </g>
-  <g class="f3" style="animation-delay:-2s">
-    <rect x="200" y="80" width="147" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="222" cy="104" r="5" fill="#d4483b"/>
-    <text x="238" y="111" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">Next.js</text>
-  </g>
-  <g class="f2" style="animation-delay:-1s">
-    <rect x="650" y="320" width="89" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="672" cy="344" r="5" fill="#d4483b"/>
-    <text x="688" y="351" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">PHP</text>
-  </g>
-  <g class="f3" style="animation-delay:-4s">
-    <rect x="590" y="392" width="118" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="612" cy="416" r="5" fill="#d4483b"/>
-    <text x="628" y="423" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">MySQL</text>
-  </g>
-  <g class="f2" style="animation-delay:-3s">
-    <rect x="60" y="770" width="176" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="82" cy="794" r="5" fill="#d4483b"/>
-    <text x="98" y="801" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">WordPress</text>
-  </g>
-  <g class="f1" style="animation-delay:-5s">
-    <rect x="440" y="845" width="191" height="48" rx="24" fill="#15151a" fill-opacity=".95" stroke="url(#edge)" stroke-width="1.8"/>
-    <circle cx="462" cy="869" r="5" fill="#d4483b"/>
-    <text x="478" y="876" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="22" font-weight="700" fill="#edeae3" letter-spacing=".5">TypeScript</text>
   </g>
 
   <!-- floor reflection fade -->

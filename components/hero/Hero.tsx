@@ -83,6 +83,14 @@ export default function Hero() {
         <HeroContent scrollYProgress={scrollYProgress} parallaxX={parallaxX} parallaxY={parallaxY} />
       </div>
 
+      {/* scroll cue: a thin line with a crimson segment sliding down it */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-5 left-1/2 z-20 hidden h-12 w-px -translate-x-1/2 overflow-hidden bg-paper/15 md:block"
+      >
+        <span className="scroll-cue block h-1/2 w-full bg-crimson-bright" />
+      </div>
+
       <div className="relative z-10 w-full md:w-[55%] lg:w-[50%]">
         <HeroVisual
           pointerX={pointerX}

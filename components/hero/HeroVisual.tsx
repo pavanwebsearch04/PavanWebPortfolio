@@ -1,7 +1,9 @@
 "use client";
 
+import { useCallback, useRef, useState } from "react";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import HeroPortrait from "./HeroPortrait";
+import HeroLabels from "./HeroLabels";
 import { WEB_CANVAS } from "@/lib/webData";
 
 export default function HeroVisual({
@@ -25,11 +27,27 @@ export default function HeroVisual({
   const lightLeft = useTransform(pointerX, [WEB_CANVAS.width * 0.45, WEB_CANVAS.width], [0, 100]);
   const lightTop = useTransform(pointerY, [0, WEB_CANVAS.height], [0, 100]);
 
-  const bgX = useTransform(parallaxX, (v) => v * 5);
-  const bgY = useTransform(parallaxY, (v) => v * 4);
+  // three depth layers: background ~10px, portrait ~20px, labels ~35px
+  const bgX = useTransform(parallaxX, (v) => v * 10);
+  const bgY = useTransform(parallaxY, (v) => v * 8);
+
+  // a click sends a ripple outward through the web
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
+  const nextId = useRef(0);
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!interactive || !rootRef.current) return;
+      const r = rootRef.current.getBoundingClientRect();
+      const id = nextId.current++;
+      setRipples((list) => [...list.slice(-3), { id, x: e.clientX - r.left, y: e.clientY - r.top }]);
+      window.setTimeout(() => setRipples((list) => list.filter((p) => p.id !== id)), 1100);
+    },
+    [interactive]
+  );
 
   return (
-    <div className="relative h-[46vh] w-full overflow-hidden md:h-full">
+    <div ref={rootRef} onPointerDown={onPointerDown} className="relative h-[46vh] w-full overflow-hidden md:h-full">
       {/* base + atmospheric layers */}
       <motion.div style={{ x: bgX, y: bgY }} className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,rgba(167,58,47,0.12),transparent_55%)]" />
@@ -66,6 +84,12 @@ export default function HeroVisual({
           interactive={interactive}
         />
       </div>
+
+      <HeroLabels parallaxX={parallaxX} parallaxY={parallaxY} />
+
+      {ripples.map((p) => (
+        <span key={p.id} aria-hidden className="hero-ripple pointer-events-none absolute" style={{ left: p.x, top: p.y }} />
+      ))}
 
       <div className="film-grain opacity-[0.03]" />
     </div>

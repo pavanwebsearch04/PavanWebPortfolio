@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { skillCategories } from "@/data/skills";
+import { AnimatePresence, motion } from "framer-motion";
+import { categoryDescriptions, skillCategories, skillDescriptions } from "@/data/skills";
 import { useIsCoarsePointer } from "@/hooks/useIsCoarsePointer";
 import { useOnScreen } from "@/hooks/useOnScreen";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -56,6 +57,11 @@ export default function SkillsWeb({ activeId, selectedId, onHover, onSelect }: S
   const rootRef = useRef<HTMLDivElement>(null);
   const onScreen = useOnScreen(rootRef, 120);
   const ambientOk = onScreen && !reduced;
+  // entry: nodes spread out from the centre and the strands draw in, once
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    if (onScreen) setEntered(true);
+  }, [onScreen]);
   const bendOk = ambientOk && !coarse;
 
   const pathRefs = useRef<Array<SVGPathElement | null>>([]);
@@ -191,6 +197,8 @@ export default function SkillsWeb({ activeId, selectedId, onHover, onSelect }: S
       ref={rootRef}
       className="skills-web relative left-1/2 w-[min(1320px,calc(100vw-3rem))] -translate-x-1/2"
       style={{ aspectRatio: `${WEB_W} / ${WEB_H}` }}
+      data-reveal
+      data-entered={entered ? "true" : "false"}
       data-active={active ? "true" : "false"}
       data-ambient={ambientOk ? "true" : "false"}
     >
@@ -214,7 +222,9 @@ export default function SkillsWeb({ activeId, selectedId, onHover, onSelect }: S
               <path
                 key={s.id}
                 ref={bendIndex >= 0 ? (el) => void (pathRefs.current[bendIndex] = el) : undefined}
-                className="sw-strand"
+                className="sw-strand sw-draw"
+                pathLength={1}
+                style={{ animationDelay: `${(bendIndex >= 0 ? bendIndex : 0) * 0.012}s` }}
                 d={strandD(s)}
                 fill="none"
                 stroke="#F2EFE8"
@@ -285,13 +295,23 @@ export default function SkillsWeb({ activeId, selectedId, onHover, onSelect }: S
           return (
             <li
               key={n.id}
-              className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{
-                left: `${((n.x / WEB_W) * 100).toFixed(2)}%`,
-                top: `${((n.y / WEB_H) * 100).toFixed(2)}%`,
-                zIndex: state === "idle" ? 10 : 20,
-                maxWidth: "13.5rem",
-              }}
+              className={`sw-node absolute -translate-x-1/2 -translate-y-1/2 ${entered ? "sw-in" : "sw-pre"}`}
+              style={
+                {
+                  left: `${((n.x / WEB_W) * 100).toFixed(2)}%`,
+                  top: `${((n.y / WEB_H) * 100).toFixed(2)}%`,
+                  zIndex: state === "idle" ? 10 : 20,
+                  maxWidth: "13.5rem",
+                  "--fx": `${(((LAYOUT.center.x - n.x) / WEB_W) * 100).toFixed(2)}cqw`,
+                  "--fy": `${(((LAYOUT.center.y - n.y) / WEB_W) * 100).toFixed(2)}cqw`,
+                  "--ed": `${(i * 0.035).toFixed(3)}s`,
+                  // idle drift: a slow, small, per-node sine wander
+                  "--dd": `${7 + (i % 5) * 1.3}s`,
+                  "--do": `${-(i % 7) * 1.1}s`,
+                  "--dx": `${(i % 2 ? 1 : -1) * (2 + (i % 3))}px`,
+                  "--dy": `${(i % 3 ? -1 : 1) * (2 + (i % 4))}px`,
+                } as React.CSSProperties
+              }
             >
               <SkillNode
                 skill={{ id: n.id, name: n.label }}
@@ -309,6 +329,32 @@ export default function SkillsWeb({ activeId, selectedId, onHover, onSelect }: S
           );
         })}
       </ul>
+
+      {/* tooltip card that follows the active node */}
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            key={active.id}
+            aria-hidden
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              left: `${((active.x / WEB_W) * 100).toFixed(2)}%`,
+              top: `calc(${((active.y / WEB_H) * 100).toFixed(2)}% + 2.6rem)`,
+              translateX: "-50%",
+            }}
+            className="pointer-events-none absolute z-30 w-60 border border-crimson-bright/50 bg-ink/95 px-3.5 py-2.5 text-support text-paper-body shadow-[0_18px_40px_-16px_rgba(0,0,0,0.9)]"
+          >
+            <span className="line-clamp-3">
+              {active.kind === "hub"
+                ? categoryDescriptions[active.category]
+                : skillDescriptions[active.id] ?? active.label}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

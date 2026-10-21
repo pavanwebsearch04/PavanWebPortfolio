@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import RollNumber from "@/components/motion/RollNumber";
 
 type Mark = "S" | "F" | null; // S = spider (you), F = fly (computer)
 type Difficulty = "easy" | "normal" | "hard";
@@ -268,7 +269,9 @@ export default function SpiderVsFly() {
         ].map((s) => (
           <div key={s.label} className="flex items-baseline justify-between gap-3 bg-ink-graphite px-3 py-2.5">
             <dt className="font-mono text-label tracking-[0.12em] text-paper-muted">{s.label}</dt>
-            <dd className="font-mono text-nav text-paper">{s.value}</dd>
+            <dd className="font-mono text-nav text-paper">
+              <RollNumber value={s.value} />
+            </dd>
           </div>
         ))}
       </dl>
@@ -300,6 +303,8 @@ export default function SpiderVsFly() {
                 y2={center(outcome.line[2]).y}
                 stroke="#ee6c5c"
                 strokeWidth="5"
+                pathLength={1}
+                className="win-strand"
               />
             )}
           </svg>
@@ -319,8 +324,16 @@ export default function SpiderVsFly() {
                     canPlay ? "cursor-pointer hover:bg-paper/[0.06]" : "cursor-default"
                   }`}
                 >
-                  {m === "S" && <SpiderGlyph className="h-full w-full text-paper" />}
-                  {m === "F" && <FlyGlyph className="h-full w-full text-crimson-text" />}
+                  {m === "S" && (
+                    <span className="piece-pop block h-full w-full">
+                      <SpiderGlyph className="h-full w-full text-paper" />
+                    </span>
+                  )}
+                  {m === "F" && (
+                    <span className="piece-pop block h-full w-full">
+                      <FlyGlyph className="h-full w-full text-crimson-text" />
+                    </span>
+                  )}
                   {!m && canPlay && (
                     <SpiderGlyph className="h-full w-full text-paper opacity-0 transition-opacity group-hover:opacity-25 group-focus-visible:opacity-25" />
                   )}

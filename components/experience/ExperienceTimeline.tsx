@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { experience } from "@/data/experience";
 import ExperienceItem from "./ExperienceItem";
 import ExperienceWeb from "./ExperienceWeb";
@@ -16,6 +17,13 @@ export default function ExperienceTimeline({ interactive }: { interactive: boole
   // persisted, and scrolling never touches it. One card is open at a time.
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const releaseHold = useRef<(() => void) | null>(null);
+
+  // the spine grows with scroll: its head sits 60% down the viewport and each
+  // node pops in as the head reaches it (nodes use the same 60% line)
+  const reduced = useReducedMotion();
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start 60%", "end 60%"] });
+  const spineScale = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.4 });
 
   // When another card collapses above the one just clicked, the clicked card
   // would slide up the screen. Keep its button where the visitor's pointer
@@ -57,16 +65,13 @@ export default function ExperienceTimeline({ interactive }: { interactive: boole
   );
 
   return (
-    <div className="relative" style={{ overflowAnchor: "none" }}>
+    <div ref={wrapRef} className="relative" style={{ overflowAnchor: "none" }}>
       <ExperienceWeb interactive={interactive} />
 
       {/* the vertical spine */}
       <motion.div
-        initial={{ scaleY: 0 }}
-        whileInView={{ scaleY: 1 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute left-3 top-2 bottom-16 w-px origin-top bg-gradient-to-b from-paper/25 via-paper/12 to-transparent md:left-1/2 md:-translate-x-1/2"
+        style={{ scaleY: reduced ? 1 : spineScale }}
+        className="absolute left-3 top-2 bottom-16 w-px origin-top bg-gradient-to-b from-crimson-bright/70 via-crimson-bright/35 to-transparent md:left-1/2 md:-translate-x-1/2"
       />
 
       <div className="relative md:grid md:grid-cols-[1fr_auto_1fr] md:gap-x-10">

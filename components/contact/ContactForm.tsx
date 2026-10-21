@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import { contact } from "@/data/contact";
 import { services } from "@/data/services";
+import Magnetic from "@/components/motion/Magnetic";
+import SweepFill from "@/components/motion/SweepFill";
 
 type SubmitState = "idle" | "submitting" | "sent" | "not_configured" | "error";
 type FieldId = "name" | "email" | "phone" | "projectType" | "message";
@@ -76,6 +78,23 @@ function FieldMarker({ active }: { active: boolean }) {
   );
 }
 
+// small check that draws itself once a field is valid
+function ValidTick({ show }: { show: boolean }) {
+  if (!show) return null;
+  return (
+    <svg
+      aria-hidden
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      className="pointer-events-none absolute right-3 top-[2.2rem] text-crimson-text"
+    >
+      <path d="M2.5 8.5l3.8 3.8 7.2-8.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" pathLength={1} className="tick-draw" />
+    </svg>
+  );
+}
+
 export default function ContactForm({ onFormActive }: { onFormActive: (active: boolean) => void }) {
   const [values, setValues] = useState<FormValues>({
     name: "",
@@ -89,6 +108,8 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
   const [errors, setErrors] = useState<Partial<Record<FieldId, string>>>({});
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  // bumped on every failed validation so invalid fields shake again each time
+  const [shakeTick, setShakeTick] = useState(0);
 
   const nameId = useId();
   const emailId = useId();
@@ -118,6 +139,7 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
     if (values.message.trim().length < 10) next.message = "Please share a few details (at least 10 characters).";
     setErrors(next);
     if (Object.keys(next).length > 0) {
+      setShakeTick((n) => n + 1);
       const first = (["name", "email", "phone", "projectType", "message"] as FieldId[]).find((f) => next[f]);
       const ids: Record<FieldId, string> = { name: nameId, email: emailId, phone: phoneId, projectType: typeId, message: messageId };
       if (first) document.getElementById(ids[first])?.focus();
@@ -144,15 +166,33 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
   };
 
   const fieldClass = (field: string, hasError: boolean) =>
-    `w-full border-b bg-paper/[0.05] px-3 py-3 text-[1.0625rem] text-paper outline-none transition-colors placeholder:text-paper-dim ${
+    `form-field w-full border-b bg-paper/[0.05] px-3 py-3 text-[1.0625rem] text-paper outline-none transition-colors placeholder:text-transparent focus:placeholder:text-paper-dim ${
       hasError
-        ? "border-crimson-bright"
+        ? `border-crimson-bright ${shakeTick % 2 ? "shake-a" : "shake-b"}`
         : focusedField === field
           ? "border-crimson-bright/60"
           : "border-paper/45"
     }`;
 
-  const labelClass = "flex items-center gap-2 font-mono text-nav text-paper-body";
+  // floating label: sits inside the field, then lifts and shrinks on focus or
+  // once the field has a value (transform only). The select is always lifted.
+  const labelCls = (field: keyof FormValues, always = false) => {
+    const up = always || focusedField === field || Boolean(values[field]);
+    return `pointer-events-none absolute left-0 top-0 z-10 flex origin-left items-center gap-2 font-mono text-nav text-paper-body transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      up ? "translate-x-0 translate-y-0 scale-[0.82]" : "translate-x-3 translate-y-[2.3rem]"
+    }`;
+  };
+
+  const emailOk = EMAIL_RE.test(values.email.trim());
+  const phoneOk = PHONE_RE.test(values.phone.trim()) && phoneDigits(values.phone) >= 7 && phoneDigits(values.phone) <= 15;
+  const valid = {
+    name: values.name.trim().length > 1 && !errors.name,
+    email: emailOk && !errors.email,
+    phone: phoneOk && !errors.phone,
+    projectType: Boolean(values.projectType) && !errors.projectType,
+    message: values.message.trim().length >= 10 && !errors.message,
+  };
+
   const errorText = (id: string, msg?: string) =>
     msg ? (
       <p id={`${id}-error`} className="text-support text-crimson-text">
@@ -162,8 +202,8 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-7" aria-describedby={`${messageId}-status`}>
-      <div className="flex flex-col gap-2">
-        <label htmlFor={nameId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={nameId} className={labelCls("name")}>
           <FieldMarker active={focusedField === "name"} />
           FULL NAME
         </label>
@@ -181,11 +221,12 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
           placeholder="Your full name"
           className={fieldClass("name", Boolean(errors.name))}
         />
+        <ValidTick show={valid.name} />
         {errorText(nameId, errors.name)}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor={emailId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={emailId} className={labelCls("email")}>
           <FieldMarker active={focusedField === "email"} />
           EMAIL ADDRESS
         </label>
@@ -203,11 +244,12 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
           placeholder="you@example.com"
           className={fieldClass("email", Boolean(errors.email))}
         />
+        <ValidTick show={valid.email} />
         {errorText(emailId, errors.email)}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor={phoneId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={phoneId} className={labelCls("phone")}>
           <FieldMarker active={focusedField === "phone"} />
           MOBILE NUMBER
         </label>
@@ -226,11 +268,12 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
           placeholder="+918003811135"
           className={fieldClass("phone", Boolean(errors.phone))}
         />
+        <ValidTick show={valid.phone} />
         {errorText(phoneId, errors.phone)}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor={typeId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={typeId} className={labelCls("projectType", true)}>
           <FieldMarker active={focusedField === "projectType"} />
           PROJECT TYPE
         </label>
@@ -254,11 +297,12 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
             </option>
           ))}
         </select>
+        <ValidTick show={valid.projectType} />
         {errorText(typeId, errors.projectType)}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor={budgetId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={budgetId} className={labelCls("budget")}>
           <FieldMarker active={focusedField === "budget"} />
           BUDGET RANGE <span className="text-paper-dim">(OPTIONAL)</span>
         </label>
@@ -275,8 +319,8 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor={messageId} className={labelClass}>
+      <div className="relative flex flex-col gap-2 pt-6">
+        <label htmlFor={messageId} className={labelCls("message")}>
           <FieldMarker active={focusedField === "message"} />
           PROJECT DETAILS
         </label>
@@ -293,6 +337,7 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
           placeholder="What are you looking to build? Include any pages, features or deadlines."
           className={`${fieldClass("message", Boolean(errors.message))} resize-none`}
         />
+        <ValidTick show={valid.message} />
         {errorText(messageId, errors.message)}
       </div>
 
@@ -305,39 +350,52 @@ export default function ContactForm({ onFormActive }: { onFormActive: (active: b
       </div>
 
       <div className="flex flex-col gap-3 pt-2">
-        <motion.button
-          type="submit"
-          disabled={submitState === "submitting"}
-          whileHover={submitState === "idle" ? { x: 3 } : undefined}
-          transition={{ type: "spring", stiffness: 300, damping: 24 }}
-          className="flex w-fit items-center gap-2.5 border border-paper/45 bg-paper/[0.06] px-7 py-3.5 font-mono text-support font-medium tracking-wide text-paper transition-colors hover:border-crimson-bright/70 hover:bg-paper/[0.1] disabled:opacity-60"
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {submitState === "sent" ? (
-              <motion.span
-                key="sent"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                className="flex items-center gap-2"
-              >
-                <Check size={14} className="text-crimson-text" />
-                MESSAGE SENT
-              </motion.span>
-            ) : (
-              <motion.span
-                key="idle"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                className="flex items-center gap-2"
-              >
-                {submitState === "submitting" ? "SENDING…" : "SEND MESSAGE"}
-                <ArrowRight size={14} />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.button>
+        <Magnetic className="w-fit">
+          <button
+            type="submit"
+            disabled={submitState === "submitting"}
+            className={`relative flex w-fit items-center gap-2.5 overflow-hidden border border-paper/45 bg-paper/[0.06] px-7 py-3.5 font-mono text-support font-medium tracking-wide text-paper transition-colors hover:border-crimson-bright/70 disabled:opacity-60 ${
+              submitState === "error" || submitState === "not_configured" ? "shake-a" : ""
+            }`}
+          >
+            {submitState === "idle" || submitState === "error" || submitState === "not_configured" ? <SweepFill /> : null}
+            {submitState === "sent" && <span aria-hidden className="ripple-ring absolute left-6 top-1/2" />}
+            <AnimatePresence mode="wait" initial={false}>
+              {submitState === "sent" ? (
+                <motion.span
+                  key="sent"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="relative flex items-center gap-2"
+                >
+                  <Check size={14} className="text-crimson-text" />
+                  MESSAGE SENT
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="idle"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="relative flex items-center gap-2"
+                >
+                  {submitState === "submitting" ? (
+                    <>
+                      <span aria-hidden className="btn-spinner" />
+                      SENDING…
+                    </>
+                  ) : (
+                    <>
+                      {submitState === "error" || submitState === "not_configured" ? "RETRY" : "SEND MESSAGE"}
+                      <ArrowRight size={14} />
+                    </>
+                  )}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </Magnetic>
 
         <div id={`${messageId}-status`} role="status" aria-live="polite">
           <AnimatePresence>

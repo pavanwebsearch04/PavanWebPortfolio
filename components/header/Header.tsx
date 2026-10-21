@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { motion, useMotionTemplate, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useMotionValueEvent, useScroll, useSpring, useTransform } from "framer-motion";
+import { EASE_OUT } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsCoarsePointer } from "@/hooks/useIsCoarsePointer";
 import HeaderLogo from "./HeaderLogo";
@@ -94,6 +95,17 @@ export default function Header() {
   // scroll-driven compact transition — a spacious transparent bar at the
   // top that quietly firms up as the page scrolls
   const { scrollY } = useScroll();
+
+  // hides on scroll down, returns on scroll up (400ms). Stays put near the top,
+  // while the mobile menu is open, for keyboard focus, and for reduced motion.
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const d = y - lastY.current;
+    if (Math.abs(d) < 6) return;
+    lastY.current = y;
+    setHidden(d > 0 && y > 160 && !mobileOpen && !reducedMotion);
+  });
   const paddingY = useTransform(scrollY, [0, 80], [22, 12]);
   const bgAlpha = useTransform(scrollY, [0, 80], [0, 0.82]);
   const borderAlpha = useTransform(scrollY, [0, 80], [0, 0.12]);
@@ -116,9 +128,10 @@ export default function Header() {
           backdropFilter,
           WebkitBackdropFilter: backdropFilter,
         }}
+        onFocusCapture={() => setHidden(false)}
         initial={{ y: -30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        animate={{ y: hidden ? "-110%" : 0, opacity: 1 }}
+        transition={{ y: { duration: 0.4, ease: EASE_OUT }, opacity: { duration: 0.9, ease: EASE_OUT } }}
         className="fixed inset-x-0 top-0 z-50 border-b border-transparent"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">

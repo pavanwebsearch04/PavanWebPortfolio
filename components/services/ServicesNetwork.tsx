@@ -1,13 +1,70 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { useOnScreen } from "@/hooks/useOnScreen";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { generateConnectedWeb } from "@/lib/webData";
 import { services } from "@/data/services";
 import ServiceNode from "./ServiceNode";
 
 const CANVAS = { width: 1200, height: 650 };
+
+// Desktop only (lg+) and not for reduced motion: cards stick and stack. Below
+// that the cards fall back to the normal grid with their entrance reveal.
+function useStackMode() {
+  const reduced = useReducedMotion();
+  const [wide, setWide] = useState(false);
+  useEffect(() => {
+    const q = window.matchMedia("(min-width: 1024px)");
+    setWide(q.matches);
+    const h = (e: MediaQueryListEvent) => setWide(e.matches);
+    q.addEventListener("change", h);
+    return () => q.removeEventListener("change", h);
+  }, []);
+  return wide && !reduced;
+}
+
+// One sticky slot. While the NEXT card slides over it, it scales to 0.94 and
+// dims (transform + opacity only).
+function StackSlot({
+  index,
+  stack,
+  selfRef,
+  nextRef,
+  children,
+}: {
+  index: number;
+  stack: boolean;
+  selfRef: React.RefObject<HTMLDivElement>;
+  nextRef?: React.RefObject<HTMLDivElement>;
+  children: React.ReactNode;
+}) {
+  const idle = useMotionValue(0);
+  const { scrollYProgress } = useScroll({ target: nextRef ?? selfRef, offset: ["start end", "start 18%"] });
+  const p = nextRef && stack ? scrollYProgress : idle;
+  const scale = useTransform(p, [0, 1], [1, 0.94]);
+  const dim = useTransform(p, [0, 1], [0, 0.55]);
+
+  return (
+    <div
+      ref={selfRef}
+      className={stack ? "sticky mb-[9vh] last:mb-0" : ""}
+      style={stack ? { top: `${96 + index * 18}px`, zIndex: index + 1 } : undefined}
+    >
+      <motion.div style={stack ? { scale, transformOrigin: "50% 0%" } : undefined} className="relative">
+        {children}
+        {stack && nextRef && (
+          <motion.span
+            aria-hidden
+            style={{ opacity: dim }}
+            className="pointer-events-none absolute inset-0 bg-ink"
+          />
+        )}
+      </motion.div>
+    </div>
+  );
+}
 
 
 export default function ServicesNetwork({ interactive: interactiveProp }: { interactive: boolean }) {
@@ -16,6 +73,8 @@ export default function ServicesNetwork({ interactive: interactiveProp }: { inte
   const interactive = interactiveProp && onScreen;
   const [activeId, setActiveId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const stack = useStackMode();
+  const slotRefs = useMemo(() => services.map(() => createRef<HTMLDivElement>()), []);
 
   const geometry = useMemo(() => {
     // loosely scattered ambient anchors — purely atmospheric, not tied to
@@ -107,18 +166,29 @@ export default function ServicesNetwork({ interactive: interactiveProp }: { inte
         </motion.g>
       </svg>
 
-      <div className="relative grid grid-cols-1 items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div
+        className={`relative grid grid-cols-1 items-start gap-6 sm:grid-cols-2 ${
+          stack ? "!block mx-auto max-w-4xl" : "lg:grid-cols-3"
+        }`}
+      >
         {services.map((service, i) => (
-          <div key={service.id}>
+          <StackSlot
+            key={service.id}
+            index={i}
+            stack={stack}
+            selfRef={slotRefs[i]}
+            nextRef={slotRefs[i + 1]}
+          >
             <ServiceNode
               service={service}
               active={activeId === service.id}
               expanded={expandedId === service.id}
               onActivate={setActiveId}
               onToggle={(id) => setExpandedId((prev) => (prev === id ? null : id))}
-              delay={i * 0.07}
+              delay={stack ? 0 : i * 0.07}
+              wide={stack}
             />
-          </div>
+          </StackSlot>
         ))}
       </div>
     </div>

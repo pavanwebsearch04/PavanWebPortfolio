@@ -6,6 +6,7 @@ import { Skill, SkillCategoryMeta, skillLinks, skillNeighbors } from "@/data/ski
 import { bowed, hashString } from "@/lib/webGeometry";
 import WebCorner from "@/components/web/WebCorner";
 import SkillNode, { SkillNodeState } from "./SkillNode";
+import CountUp from "@/components/motion/CountUp";
 
 const SHAPES: Array<"a" | "b" | "c"> = ["a", "b", "c"];
 // small, irregular horizontal nudges so rows read as a web, not a grid
@@ -72,6 +73,8 @@ export default function SkillCategory({
   const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [links, setLinks] = useState<Link[]>([]);
+  // hovering the category header lights up all of its skills
+  const [rowHot, setRowHot] = useState(false);
   const ids = useMemo(() => items.map((s) => s.id), [items]);
 
   const measure = useCallback(() => {
@@ -121,6 +124,7 @@ export default function SkillCategory({
     if (selectedId === id) return "selected";
     if (activeId === id) return "active";
     if (activeId && skillNeighbors[activeId]?.includes(id)) return "related";
+    if (rowHot && !activeId) return "related";
     return "idle";
   };
 
@@ -133,7 +137,11 @@ export default function SkillCategory({
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       className="panel relative flex flex-col gap-6 p-5 md:p-7"
     >
-      <div className="relative flex items-baseline gap-3 border-b border-paper/20 pb-5">
+      <div
+        onMouseEnter={() => setRowHot(true)}
+        onMouseLeave={() => setRowHot(false)}
+        className="relative flex items-baseline gap-3 border-b border-paper/20 pb-5"
+      >
         <span className="font-mono text-nav text-crimson-text">{String(index + 1).padStart(2, "0")}</span>
         <h3
           id={`skill-cat-${meta.id}`}
@@ -142,7 +150,7 @@ export default function SkillCategory({
           {meta.label}
         </h3>
         <span className="ml-auto shrink-0 pr-5 font-mono text-label tracking-[0.08em] text-paper-dim">
-          {String(items.length).padStart(2, "0")}
+          <CountUp to={items.length} />
         </span>
         <span aria-hidden="true" className="absolute -bottom-px left-0 h-px w-12 bg-crimson-bright/80" />
       </div>
@@ -184,7 +192,14 @@ export default function SkillCategory({
 
         <ul className="relative z-10 flex flex-wrap gap-x-3.5 gap-y-[1.125rem]">
           {items.map((skill, i) => (
-            <li key={skill.id} className={`max-w-full ${NUDGES[i % NUDGES.length]}`}>
+            <motion.li
+              key={skill.id}
+              initial={{ opacity: 0, scale: 0.6 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ type: "spring", stiffness: 380, damping: 18, delay: 0.2 + i * 0.04 }}
+              className={`max-w-full ${NUDGES[i % NUDGES.length]}`}
+            >
               <SkillNode
                 ref={(el) => {
                   chipRefs.current[skill.id] = el;
@@ -195,7 +210,7 @@ export default function SkillCategory({
                 onHover={onHover}
                 onSelect={onSelect}
               />
-            </li>
+            </motion.li>
           ))}
         </ul>
       </div>

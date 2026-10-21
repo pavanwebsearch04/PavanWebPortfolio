@@ -1,6 +1,10 @@
 "use client";
 
 import { motion, MotionValue, useTransform } from "framer-motion";
+import Magnetic from "@/components/motion/Magnetic";
+import SweepFill from "@/components/motion/SweepFill";
+import LineFade from "@/components/motion/LineFade";
+import Marquee from "@/components/motion/Marquee";
 
 const HEADLINE_LINES = ["I BUILD", "DIGITAL", "EXPERIENCES", "THAT FEEL", "ALIVE."];
 
@@ -35,7 +39,8 @@ export default function HeroContent({
   parallaxX: MotionValue<number>;
   parallaxY: MotionValue<number>;
 }) {
-  const contentY = useTransform(scrollYProgress, [0, 1], [0, -36]);
+  // positive: the headline lags behind the page as it scrolls away
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 48]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
   const contentScale = useTransform(scrollYProgress, [0, 1], [1, 0.97]);
 
@@ -72,7 +77,23 @@ export default function HeroContent({
                 animate={{ y: "0%", filter: "blur(0px)" }}
                 transition={{ duration: 0.85, delay: 0.95 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               >
-                {line}
+                {i === HEADLINE_LINES.length - 1 ? (
+                  <span className="relative inline-block">
+                    {line}
+                    {/* one crimson glow pulse once the word has landed */}
+                    <motion.span
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 text-crimson-bright blur-[8px]"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 0.85, 0] }}
+                      transition={{ duration: 1.6, delay: 0.95 + i * 0.08 + 0.85, ease: "easeInOut" }}
+                    >
+                      {line}
+                    </motion.span>
+                  </span>
+                ) : (
+                  line
+                )}
               </motion.span>
             </span>
           ))}
@@ -80,17 +101,13 @@ export default function HeroContent({
       </ParallaxLayer>
 
       <ParallaxLayer parallaxX={parallaxX} parallaxY={parallaxY} strength={6}>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.5 }}
-          data-hero-avoid=""
-          className="max-w-xl text-pretty font-body text-body text-paper-body"
-        >
-          I&rsquo;m Pavan Vasita, a Web Developer specializing in PHP, MySQL, React,
-          WordPress, and modern web technologies. I build responsive websites, clean
-          interfaces, and practical digital solutions that bring ideas to life.
-        </motion.p>
+        <div data-hero-avoid="">
+          <LineFade
+            delay={1.5}
+            text="I’m Pavan Vasita, a Web Developer specializing in PHP, MySQL, React, WordPress, and modern web technologies. I build responsive websites, clean interfaces, and practical digital solutions that bring ideas to life."
+            className="max-w-xl text-pretty font-body text-body text-paper-body"
+          />
+        </div>
       </ParallaxLayer>
 
       <ParallaxLayer parallaxX={parallaxX} parallaxY={parallaxY} strength={8}>
@@ -101,18 +118,24 @@ export default function HeroContent({
           data-hero-avoid=""
           className="flex flex-wrap items-center gap-4"
         >
-          <a
-            href="/projects"
-            className="rounded-none border border-crimson-bright/50 bg-crimson px-7 py-3.5 font-body text-support font-medium uppercase tracking-wide text-paper transition-colors hover:bg-[#b8402f]"
-          >
-            View my work
-          </a>
-          <a
-            href="/contact"
-            className="rounded-none border border-paper/40 bg-paper/[0.04] px-7 py-3.5 font-body text-support font-medium uppercase tracking-wide text-paper transition-colors hover:border-paper/70 hover:bg-paper/[0.1]"
-          >
-            Let&apos;s talk
-          </a>
+          <Magnetic>
+            <a
+              href="/projects"
+              className="relative block overflow-hidden rounded-none border border-crimson-bright/50 bg-crimson px-7 py-3.5 font-body text-support font-medium uppercase tracking-wide text-paper"
+            >
+              <SweepFill className="bg-[#7d2a21]" />
+              <span className="relative">View my work</span>
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a
+              href="/contact"
+              className="relative block overflow-hidden rounded-none border border-paper/40 bg-paper/[0.04] px-7 py-3.5 font-body text-support font-medium uppercase tracking-wide text-paper transition-colors hover:border-crimson-bright/70"
+            >
+              <SweepFill className="bg-crimson-bright" />
+              <span className="relative">Let&apos;s talk</span>
+            </a>
+          </Magnetic>
         </motion.div>
       </ParallaxLayer>
 
@@ -124,15 +147,19 @@ export default function HeroContent({
           data-hero-avoid=""
           className="flex flex-col gap-1.5 font-mono text-label tracking-[0.1em] text-paper-dim"
         >
-          <ul className="flex flex-wrap gap-x-2 gap-y-1" aria-label="Core technologies">
-            {["NEXT.JS", "TYPESCRIPT", "REACT", "WORDPRESS", "PHP", "MYSQL", "SQL"].map((t, i) => (
-              <li key={t} className="whitespace-nowrap">
-                {i > 0 && <span aria-hidden="true" className="mr-2">·</span>}
-                {t}
-              </li>
-            ))}
-          </ul>
-          <p>UDAIPUR, RAJASTHAN, INDIA</p>
+          <Marquee
+            ariaLabel="Core technologies"
+            items={["NEXT.JS", "TYPESCRIPT", "REACT", "WORDPRESS", "PHP", "MYSQL", "SQL"]}
+            speed={34}
+            className="max-w-[26rem]"
+          />
+          <p className="flex items-center gap-2.5">
+            <span aria-hidden className="relative flex h-2 w-2">
+              <span className="avail-ping absolute inline-flex h-full w-full rounded-full bg-crimson-text opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-crimson-text" />
+            </span>
+            UDAIPUR, RAJASTHAN, INDIA
+          </p>
         </motion.div>
       </ParallaxLayer>
     </motion.div>

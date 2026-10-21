@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PrimaryHeading } from "@/components/ui/PageContext";
+import ScrubText from "@/components/motion/ScrubText";
 
 export default function AboutIntro() {
   return (
@@ -39,16 +40,7 @@ export default function AboutIntro() {
           "I\u2019m Pavan Vasita, a Web Developer from Udaipur, Rajasthan, with a focus on WordPress development, responsive interfaces, and practical digital experiences.",
           "I enjoy turning ideas into websites that are clear, functional, and thoughtfully built. My approach combines attention to detail, problem-solving, and a willingness to keep learning.",
         ].map((text, i) => (
-          <motion.p
-            key={i}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 + i * 0.12 }}
-            className="text-body text-paper-body"
-          >
-            {text}
-          </motion.p>
+          <ScrubText key={i} text={text} className="text-body text-paper-body" />
         ))}
       </div>
     </div>

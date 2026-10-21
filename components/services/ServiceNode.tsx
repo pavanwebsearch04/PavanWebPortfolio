@@ -98,6 +98,7 @@ export default function ServiceNode({
   onActivate,
   onToggle,
   delay,
+  wide = false,
 }: {
   service: Service;
   active: boolean;
@@ -105,6 +106,8 @@ export default function ServiceNode({
   onActivate: (id: string | null) => void;
   onToggle: (id: string) => void;
   delay: number;
+  /** stacked desktop layout: content splits into two columns */
+  wide?: boolean;
 }) {
   const panelId = useId();
   const { section } = useSiteLinks();
@@ -121,7 +124,7 @@ export default function ServiceNode({
       onBlur={() => onActivate(null)}
       data-web="card"
       data-web-id={service.id}
-      className="panel relative p-6 md:p-7"
+      className="panel svc-card group relative p-6 md:p-7"
     >
       {/* crimson accent line, revealed on activation */}
       <motion.span
@@ -133,30 +136,49 @@ export default function ServiceNode({
       />
 
       <motion.div animate={{ x: active ? 4 : 0 }} transition={{ duration: 0.3 }}>
+        <div className={wide ? "grid grid-cols-[1.1fr_1fr] gap-x-12" : ""}>
+        <div>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-nav text-crimson-text">{service.index}</span>
+            <span
+              className="svc-index font-display text-[clamp(2.25rem,1.8rem+1.6vw,3.5rem)] font-medium leading-none"
+              aria-label={`Service ${service.index}`}
+            >
+              {service.index}
+            </span>
             <NodeGlyph id={service.id} active={active} />
           </div>
         </div>
 
         <div className="mt-4 flex items-center gap-3">
-          <span className={`shrink-0 transition-colors duration-300 ${active ? "text-crimson-text" : "text-paper-muted"}`}>
+          <span
+            data-icon={service.icon}
+            className={`svc-icon shrink-0 transition-colors duration-300 ${active ? "text-crimson-text" : "text-paper-muted"}`}
+          >
             <ServiceIconGlyph icon={service.icon} />
           </span>
           <h3 className="font-display text-card font-medium text-paper">{service.title}</h3>
         </div>
         <p className="mt-2 text-support text-paper-body">{service.description}</p>
-        <p className="mt-3 text-support text-paper-muted">
+        </div>
+        <div>
+        <p className={`text-support text-paper-muted ${wide ? "mt-1" : "mt-3"}`}>
           <span className="font-mono text-label tracking-[0.1em] text-crimson-text">FOR YOU </span>
           {service.benefit}
         </p>
 
         <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
-          {service.tech.map((t) => (
-            <li key={t} className="border border-paper/20 px-2 py-0.5 font-mono text-label tracking-[0.06em] text-paper-muted">
+          {service.tech.map((t, ti) => (
+            <motion.li
+              key={t}
+              initial={{ opacity: 0, scale: 0.7 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ type: "spring", stiffness: 420, damping: 20, delay: 0.25 + ti * 0.05 }}
+              className="border border-paper/20 px-2 py-0.5 font-mono text-label tracking-[0.06em] text-paper-muted"
+            >
               {t}
-            </li>
+            </motion.li>
           ))}
         </ul>
 
@@ -177,8 +199,13 @@ export default function ServiceNode({
           href={section("contact")}
           className="inline-flex min-h-[44px] items-center gap-1.5 font-mono text-label tracking-[0.1em] text-crimson-text transition-colors hover:text-paper"
         >
-          DISCUSS THIS SERVICE &rarr;
+          DISCUSS THIS SERVICE
+          <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">
+            &rarr;
+          </span>
         </SiteLink>
+        </div>
+        </div>
         </div>
 
         <ServiceDetails id={panelId} expanded={expanded} capabilities={service.capabilities} />

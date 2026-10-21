@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import MotionProvider from "@/components/motion/MotionProvider";
 
 export const metadata: Metadata = {
   title: "Pavan Vasita — Web Developer & WordPress Developer in Udaipur",
@@ -30,7 +31,11 @@ export default function RootLayout({
         >
           SKIP TO CONTENT
         </a>
-        {children}
+        {/* content must stay visible if scripts fail: undo the pre-reveal hidden state */}
+        <noscript>
+          <style>{`[data-reveal]{opacity:1!important;transform:none!important}[data-reveal] *{transform:none!important;opacity:1!important}`}</style>
+        </noscript>
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );

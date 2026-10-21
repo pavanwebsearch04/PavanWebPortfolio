@@ -22,16 +22,17 @@ export function ContactIntro() {
 
       <PrimaryHeading className="font-display text-section font-medium text-paper">
         {["LET'S CONNECT", "AND BUILD SOMETHING."].map((line, i) => (
-          <motion.span
-            key={line}
-            className="block"
-            initial={{ opacity: 0, y: 28, filter: "blur(8px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.85, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {line}
-          </motion.span>
+          <span key={line} className="block overflow-hidden pb-[0.08em]">
+            <motion.span
+              className="block"
+              initial={{ y: "110%" }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.85, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {line}
+            </motion.span>
+          </span>
         ))}
       </PrimaryHeading>
 

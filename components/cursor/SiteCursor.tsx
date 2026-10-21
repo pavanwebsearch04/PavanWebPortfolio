@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useAnimationFrame, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { rangeFrom } from "@/lib/seededRandom";
 import { WEB_COLORS, WEB_CONFIG } from "@/lib/webConfig";
@@ -44,6 +44,32 @@ export default function SiteCursor() {
 
   // over text fields the native text caret cursor is restored (see
   // globals.css) and the spider steps aside so it never sits on the text
+  // what the pointer is over: links/buttons make the spider grow, project
+  // cards (data-cursor="view") grow it further and show a VIEW label
+  const [mode, setMode] = useState<"default" | "link" | "view">("default");
+  const modeScale = useMotionValue(1);
+  useEffect(() => {
+    modeScale.set(mode === "view" ? 1.8 : mode === "link" ? 1.45 : 1);
+  }, [mode, modeScale]);
+
+  useEffect(() => {
+    if (!cursorActive) return;
+    const onOver = (e: PointerEvent) => {
+      const t = e.target;
+      const next =
+        t instanceof Element
+          ? t.closest("[data-cursor='view']")
+            ? "view"
+            : t.closest("a, button, [role='button'], summary, label[for]")
+              ? "link"
+              : "default"
+          : "default";
+      setMode((m) => (m === next ? m : next));
+    };
+    document.addEventListener("pointerover", onOver, { passive: true });
+    return () => document.removeEventListener("pointerover", onOver);
+  }, [cursorActive]);
+
   useEffect(() => {
     if (!cursorActive) return;
     const onOver = (e: PointerEvent) => {
@@ -74,6 +100,14 @@ export default function SiteCursor() {
     return s * (1 - 0.16 * p);
   });
   const bodyScale = useTransform(engage, [0, 1], [1, 1.07]);
+  // whole-cursor size: grows over links / project cards, squeezes to 0.8 on click
+  const cursorScale = useSpring(
+    useTransform([modeScale, pressSpring], (latest) => {
+      const [m, p] = latest as number[];
+      return m * (1 - 0.2 * p);
+    }),
+    { stiffness: 320, damping: 20 }
+  );
   const accentOpacity = useTransform(engage, [0, 1], [0, 1]);
 
   useEffect(() => {
@@ -190,6 +224,7 @@ export default function SiteCursor() {
           x: posX,
           y: posY,
           rotate: reducedMotion ? 0 : heading,
+          scale: reducedMotion ? 1 : cursorScale,
           marginLeft: -size / 2,
           marginTop: -size / 2,
           transformOrigin: `${size / 2}px ${size / 2}px`,
@@ -199,6 +234,22 @@ export default function SiteCursor() {
       >
         <SpiderArt ref={bodyRef} legScale={legScale} bodyScale={bodyScale} accentOpacity={accentOpacity} />
       </motion.svg>
+
+      {/* VIEW label beside the spider while over a project card */}
+      <motion.div style={{ x: posX, y: posY }} className="absolute left-0 top-0">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-crimson-bright/70 bg-crimson-bright/15 font-mono text-[0.6rem] tracking-[0.12em] text-paper"
+          style={{
+            marginLeft: 26,
+            marginTop: 26,
+            opacity: mode === "view" ? 1 : 0,
+            transform: `scale(${mode === "view" ? 1 : 0.4})`,
+            transition: "opacity 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          VIEW
+        </div>
+      </motion.div>
     </div>
   );
 }

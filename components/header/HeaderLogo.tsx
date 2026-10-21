@@ -46,6 +46,7 @@ export default function HeaderLogo() {
   return (
     <SiteLink
       href={section("hero")}
+      onClick={() => window.dispatchEvent(new Event("pv:logo-click"))}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
       onFocus={() => setActive(true)}

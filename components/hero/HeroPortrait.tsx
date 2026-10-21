@@ -62,7 +62,7 @@ export default function HeroPortrait({
   const [imageFailed, setImageFailed] = useState(false);
 
   const scrollY = useTransform(scrollYProgress, [0, 1], [0, -90]);
-  const scrollScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const scrollScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
   const scrollOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0.35]);
 
   const px = useTransform(parallaxX, (v) => v * 20);

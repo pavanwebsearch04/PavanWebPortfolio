@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useOnScreen } from "@/hooks/useOnScreen";
 import { motion, MotionValue, useTransform } from "framer-motion";
 import Image from "next/image";
+import { Code2, Database, PanelsTopLeft } from "lucide-react";
 import { WebNode, curvedThread } from "@/lib/webData";
 import { mulberry32, rangeFrom } from "@/lib/seededRandom";
 import { useBorderThreads } from "@/hooks/useBorderThreads";
@@ -81,6 +82,10 @@ export default function AboutWeb({
   const frontThreads = useBorderThreads(347, 4);
 
   const scrollY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  // portrait parallax (small, opposite to the web) and cursor-reactive icons
+  const portraitY = useTransform(scrollYProgress, [0, 1], [-8, 8]);
+  const iconX = useTransform(pointerX, (v) => (v < -500 ? 0 : ((v - 400) / 400) * 9));
+  const iconY = useTransform(pointerY, (v) => (v < -500 ? 0 : ((v - 400) / 400) * 9));
   const scrollOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0.6]);
 
   return (
@@ -191,6 +196,11 @@ export default function AboutWeb({
                 style={{ transform: "translateZ(-60px)" }}
                 aria-hidden
               />
+              {/* crimson outline frame that shifts further off-axis on hover */}
+              <div
+                className="about-outline absolute inset-0 rounded-[4px] border border-crimson-bright/60"
+                aria-hidden
+              />
               {/* offset backing panels give the frame its thickness */}
               <div
                 className="absolute inset-0 rounded-[4px] border border-crimson-bright/30 bg-gradient-to-br from-ink-panel to-ink"
@@ -209,26 +219,58 @@ export default function AboutWeb({
                 aria-hidden
               />
               {/* the image plane; the bg keeps the frame filled while the image loads */}
-              <div className="absolute inset-0 overflow-hidden rounded-[4px] border border-crimson-bright/55 bg-[linear-gradient(160deg,#202026,#0a0a0c)] shadow-[0_0_0_1px_rgba(10,10,12,0.9),0_0_18px_rgba(212,72,59,0.28),0_24px_40px_-18px_rgba(0,0,0,0.85)]">
-                <Image
-                  src={imageFailed ? "/portrait-placeholder.svg" : heroImages.portrait.src}
-                  alt={heroImages.portrait.alt}
-                  fill
-                  unoptimized={imageFailed}
-                  onError={() => setImageFailed(true)}
-                  sizes="256px"
-                  className="object-cover object-top contrast-[1.05] saturate-[0.9]"
-                />
+              <motion.div
+                initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+                whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0 overflow-hidden rounded-[4px] border border-crimson-bright/55 bg-[linear-gradient(160deg,#202026,#0a0a0c)] shadow-[0_0_0_1px_rgba(10,10,12,0.9),0_0_18px_rgba(212,72,59,0.28),0_24px_40px_-18px_rgba(0,0,0,0.85)]"
+              >
+                <motion.div
+                  initial={{ scale: 1.2 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ y: portraitY }}
+                  className="absolute -inset-2"
+                >
+                  <Image
+                    src={imageFailed ? "/portrait-placeholder.svg" : heroImages.portrait.src}
+                    alt={heroImages.portrait.alt}
+                    fill
+                    unoptimized={imageFailed}
+                    onError={() => setImageFailed(true)}
+                    sizes="256px"
+                    className="object-cover object-top contrast-[1.05] saturate-[0.9]"
+                  />
+                </motion.div>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(10,10,12,0.5)_100%)]" />
                 {/* edge highlight and inset ring */}
                 <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.03)_26%,transparent_44%)]" />
                 <div className="absolute inset-[3px] rounded-[2px] border border-paper/15" />
                 <div className="film-grain" />
-              </div>
+              </motion.div>
               {/* corner accents */}
               <span className="absolute -left-1.5 -top-1.5 h-3 w-3 border-l border-t border-crimson-text" style={{ transform: "translateZ(18px)" }} aria-hidden />
               <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 border-b border-r border-crimson-text" style={{ transform: "translateZ(18px)" }} aria-hidden />
             </div>
+          </motion.div>
+
+          {/* tech icons drifting around the portrait, leaning toward the cursor */}
+          <motion.div aria-hidden style={{ x: iconX, y: iconY }} className="pointer-events-none absolute inset-0">
+            {[
+              { Icon: Code2, pos: "-left-9 top-2", d: "0s" },
+              { Icon: PanelsTopLeft, pos: "-right-10 top-1/3", d: "-2.4s" },
+              { Icon: Database, pos: "-left-7 bottom-3", d: "-4.2s" },
+            ].map(({ Icon, pos, d }, i) => (
+              <span
+                key={i}
+                className={`about-float absolute ${pos} flex h-8 w-8 items-center justify-center border border-crimson-bright/40 bg-ink/85 text-crimson-text`}
+                style={{ animationDelay: d }}
+              >
+                <Icon size={15} strokeWidth={1.5} />
+              </span>
+            ))}
           </motion.div>
 
           <svg viewBox="-30 -30 160 185" className="pointer-events-none absolute -inset-[30%] overflow-visible" aria-hidden>

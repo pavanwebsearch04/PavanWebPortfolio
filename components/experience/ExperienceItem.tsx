@@ -91,15 +91,32 @@ export default function ExperienceItem({
             the card as it grows and shrinks */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-7 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-500"
+          className={`pointer-events-none absolute left-1/2 top-7 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-500 ${
+            entry.current && !expanded ? "current-glow" : ""
+          }`}
           style={{
-            opacity: expanded ? 1 : 0,
+            opacity: expanded || entry.current ? 1 : 0,
             background: "radial-gradient(closest-side, rgba(212,72,59,0.11), rgba(212,72,59,0))",
           }}
         />
-        <div className="relative z-10 mt-7">
+        <motion.div
+          initial={reduced ? false : { scale: 0, opacity: 0 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true, margin: "0px 0px -40% 0px" }}
+          transition={{ type: "spring", stiffness: 340, damping: 16 }}
+          className="relative z-10 mt-7"
+        >
           <NodeGlyph id={entry.id} active={active} />
-        </div>
+          {/* ring pulse as the node appears */}
+          <motion.span
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 -ml-3 -mt-3 h-6 w-6 rounded-full border border-crimson-bright"
+            initial={{ scale: 0.4, opacity: 0 }}
+            whileInView={{ scale: 2.6, opacity: [0, 0.8, 0] }}
+            viewport={{ once: true, margin: "0px 0px -40% 0px" }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          />
+        </motion.div>
         {/* short stub thread toward the card, desktop only */}
         <svg
           className="pointer-events-none absolute left-1/2 top-7 hidden overflow-visible md:block"
@@ -120,12 +137,13 @@ export default function ExperienceItem({
       </div>
 
       <motion.div
-        initial={{ opacity: 0, x: left ? -24 : 24, y: 16 }}
+        initial={{ opacity: 0, x: 40, y: 0 }}
         whileInView={{ opacity: 1, x: 0, y: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
+        whileHover={reduced ? undefined : { y: -6 }}
+        viewport={{ once: true, margin: "0px 0px -40% 0px" }}
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         data-expanded={expanded}
-        className={`panel experience-card relative mb-8 min-w-0 flex-1 p-5 md:mb-12 md:p-7 ${
+        className={`panel experience-card group/card relative mb-8 min-w-0 flex-1 p-5 transition-colors duration-300 hover:border-paper/40 md:mb-12 md:p-7 ${
           left ? "md:col-start-1 md:row-start-auto md:text-right" : "md:col-start-3"
         }`}
       >
@@ -139,7 +157,7 @@ export default function ExperienceItem({
         </div>
 
         <p className="mt-2 text-support font-medium text-paper-body">{entry.role}</p>
-        <p className="mt-1 font-mono text-label tracking-[0.08em] text-paper-dim">
+        <p className="mt-1 font-mono text-label tracking-[0.08em] text-paper-dim transition-colors duration-300 group-hover/card:text-crimson-text">
           {entry.duration.toUpperCase()}
           {entry.location ? ` · ${entry.location.toUpperCase()}` : ""}
         </p>
@@ -157,8 +175,11 @@ export default function ExperienceItem({
               : "border-paper/30 bg-paper/[0.04] text-paper-body hover:border-paper/60 hover:text-paper"
           }`}
         >
-          <span aria-hidden="true" className="inline-block w-3 text-center text-[1.05em] leading-none">
-            {expanded ? "−" : "+"}
+          <span
+            aria-hidden="true"
+            className={`inline-block w-3 text-center text-[1.05em] leading-none transition-transform duration-300 ${expanded ? "rotate-45" : ""}`}
+          >
+            +
           </span>
           <span aria-hidden="true">{expanded ? "HIDE DETAILS" : "VIEW DETAILS"}</span>
           <span className="sr-only">
@@ -175,17 +196,20 @@ export default function ExperienceItem({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.35, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
               className="overflow-hidden text-left"
             >
               <ul className="mt-5 flex flex-col gap-2.5 border-t border-paper/15 pt-5 text-support text-paper-body">
                 {entry.responsibilities.map((item, i) => (
-                  <li
+                  <motion.li
                     key={i}
+                    initial={reduced ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.12 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
                     className="relative pl-5 before:absolute before:left-0 before:top-[0.8em] before:h-px before:w-3 before:bg-crimson-bright/80"
                   >
                     {item}
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </motion.div>

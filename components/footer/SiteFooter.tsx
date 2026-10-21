@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { contact } from "@/data/contact";
 import SiteLink from "@/components/ui/SiteLink";
 import { useSiteLinks } from "@/hooks/useSiteLinks";
+import { BackToTop, FooterWordmark, ISTClock } from "./FooterExtras";
 
 // "lab" is its own page; everything else is a section of the home page.
 const NAV_LINKS = [
@@ -71,6 +72,8 @@ export default function SiteFooter() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col gap-10 border-t border-paper/20 pt-12"
       >
+        <FooterWordmark text={contact.name.toUpperCase()} />
+
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-1.5">
             <p className="font-display text-2xl font-medium tracking-[0.02em] text-paper">{contact.name.toUpperCase()}</p>
@@ -118,6 +121,10 @@ export default function SiteFooter() {
           <p className="font-mono text-label tracking-[0.08em] text-paper-dim">
             © {year} {contact.name.toUpperCase()}. ALL RIGHTS RESERVED.
           </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <ISTClock />
+            <BackToTop />
+          </div>
         </div>
       </motion.div>
     </footer>

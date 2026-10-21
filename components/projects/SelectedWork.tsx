@@ -6,7 +6,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useIsCoarsePointer } from "@/hooks/useIsCoarsePointer";
 import { featuredWebsites, websites } from "@/data/websites";
 import ProjectWeb from "./ProjectWeb";
-import WebsiteCard, { WebsiteCardVariant } from "./WebsiteCard";
+import ProjectList from "./ProjectList";
 import { PrimaryHeading, SectionCta } from "@/components/ui/PageContext";
 
 // trailing space keeps the heading's text readable as one sentence
@@ -20,7 +20,7 @@ const HEADLINE = ["Websites Designed ", "to Make an Impression"];
 //   mobile:        one column
 // `delay` staggers cards that enter the viewport together (seconds); `web` is
 // the card's node in the section's shared web canvas (0-1000 x 0-560).
-const LAYOUT: Array<{ variant: WebsiteCardVariant; cell: string; delay: number; web: { x: number; y: number } }> = [
+const LAYOUT: Array<{ variant: string; cell: string; delay: number; web: { x: number; y: number } }> = [
   { variant: "feature", cell: "sm:col-span-2 lg:col-span-7", delay: 0, web: { x: 290, y: 130 } },
   { variant: "standard", cell: "lg:col-span-5 lg:mt-24", delay: 0.12, web: { x: 800, y: 190 } },
   { variant: "standard", cell: "lg:col-span-5 lg:mt-16", delay: 0, web: { x: 210, y: 320 } },
@@ -117,22 +117,7 @@ export default function SelectedWork() {
         </div>
 
         {/* selected live websites — irregular editorial rhythm, not a uniform grid */}
-        <ul className="grid grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 md:gap-y-20 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-16">
-          {featuredWebsites.map((site, i) => {
-            const { variant, cell, delay } = LAYOUT[i];
-            return (
-              <li key={site.slug} className={cell}>
-                <WebsiteCard
-                  site={site}
-                  number={i + 1}
-                  variant={variant}
-                  delay={delay}
-                  onActivate={setActiveSlug}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <ProjectList sites={featuredWebsites} onActivate={setActiveSlug} />
 
         <SectionCta href="/projects" label="EXPLORE ALL PROJECTS" />
       </div>

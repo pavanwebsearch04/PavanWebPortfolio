@@ -105,11 +105,11 @@ export default function MobileMenu({
 
           <nav aria-label="Mobile primary" className="relative flex flex-1 flex-col justify-center gap-1 px-8">
             {items.map((item, i) => (
+              <div key={item.id} className="overflow-hidden">
               <motion.div
-                key={item.id}
-                initial={{ opacity: 0, x: -18 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.45, delay: 0.15 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ y: "110%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.7, delay: 0.15 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
               >
                 <SiteLink
                   ref={i === 0 ? firstLinkRef : undefined}
@@ -123,13 +123,14 @@ export default function MobileMenu({
                   <span className="font-display text-[1.75rem] font-medium text-paper">{item.label}</span>
                 </SiteLink>
               </motion.div>
+              </div>
             ))}
           </nav>
 
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.15 + items.length * 0.06 + 0.08 }}
+            transition={{ duration: 0.45, delay: 0.15 + items.length * 0.07 + 0.08 }}
             className="px-8 pb-10"
           >
             <SiteLink

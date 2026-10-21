@@ -10,7 +10,7 @@ export const heroImages = {
   // Home hero (right-side visual): original artwork.
   heroVisual: {
     src: "/hero-web-dev-visual.svg",
-    alt: "A code editor and browser preview floating in a crimson spider web, with React, Next.js, PHP, MySQL, WordPress and TypeScript labels",
+    alt: "A code editor and browser preview floating in a crimson spider web, with a spider hanging above",
     width: 800,
     height: 1000,
   },
