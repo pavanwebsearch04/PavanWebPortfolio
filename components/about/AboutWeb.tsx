@@ -25,7 +25,7 @@ const CONCEPTS: Array<{ id: string; label: string }> = [
 
 function buildNodes(): WebNode[] {
   const rng = mulberry32(4171);
-  return CONCEPTS.map((c, i) => {
+  const nodes = CONCEPTS.map((c, i) => {
     const angle = (i / CONCEPTS.length) * Math.PI * 2 - Math.PI / 2 + rangeFrom(rng, -0.12, 0.12);
     const radius = 292 + rangeFrom(rng, -14, 14);
     return {
@@ -34,12 +34,16 @@ function buildNodes(): WebNode[] {
       y: CENTER.y + Math.sin(angle) * radius,
       angle,
       radius,
-      depth: "foreground",
+      depth: "foreground" as const,
       size: rangeFrom(rng, 2.4, 3.4),
       parallax: 1,
       delay: 0.3 + i * 0.09,
     };
   });
+  // the irregular jitter shifts the ring's centroid off the portrait, so pull it back
+  const dx = nodes.reduce((s, n) => s + n.x, 0) / nodes.length - CENTER.x;
+  const dy = nodes.reduce((s, n) => s + n.y, 0) / nodes.length - CENTER.y;
+  return nodes.map((n) => ({ ...n, x: n.x - dx, y: n.y - dy }));
 }
 
 export default function AboutWeb({
@@ -151,10 +155,10 @@ export default function AboutWeb({
 
       {/* center portrait */}
       <div
-        className="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-3"
+        className="absolute -translate-x-1/2 -translate-y-1/2"
         style={{ left: "50%", top: "50%" }}
       >
-        <div className="relative h-28 w-28 md:h-32 md:w-32">
+        <div className="relative h-36 w-36 md:h-44 md:w-44">
           <svg viewBox="-30 -30 160 185" className="pointer-events-none absolute -inset-[30%] overflow-visible" aria-hidden>
             {behindThreads.map((d, i) => (
               <motion.path
@@ -178,19 +182,53 @@ export default function AboutWeb({
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative h-full w-full overflow-hidden border border-paper/15"
+            className="about-scene relative h-full w-full"
           >
-            <Image
-              src={imageFailed ? "/portrait-placeholder.svg" : heroImages.portrait.src}
-              alt={heroImages.portrait.alt}
-              fill
-              unoptimized={imageFailed}
-              onError={() => setImageFailed(true)}
-              sizes="256px"
-              className="object-cover object-top contrast-[1.05] saturate-[0.9]"
-            />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(10,10,12,0.5)_100%)]" />
-            <div className="film-grain" />
+            <div className="about-frame h-full w-full">
+              {/* soft crimson light behind the frame */}
+              <div
+                className="absolute -inset-[22%] rounded-full bg-[radial-gradient(circle,rgba(212,72,59,0.34),transparent_66%)] blur-xl"
+                style={{ transform: "translateZ(-60px)" }}
+                aria-hidden
+              />
+              {/* offset backing panels give the frame its thickness */}
+              <div
+                className="absolute inset-0 rounded-[4px] border border-crimson-bright/30 bg-gradient-to-br from-ink-panel to-ink"
+                style={{ transform: "translate3d(14px, 14px, -34px)" }}
+                aria-hidden
+              />
+              <div
+                className="absolute inset-0 rounded-[4px] border border-paper/10 bg-ink-graphite"
+                style={{ transform: "translate3d(7px, 7px, -16px)" }}
+                aria-hidden
+              />
+              {/* ground shadow */}
+              <div
+                className="absolute -bottom-5 left-[8%] right-[8%] h-4 rounded-full bg-black/70 blur-md"
+                style={{ transform: "translateZ(-40px)" }}
+                aria-hidden
+              />
+              {/* the image plane; the bg keeps the frame filled while the image loads */}
+              <div className="absolute inset-0 overflow-hidden rounded-[4px] border border-crimson-bright/55 bg-[linear-gradient(160deg,#202026,#0a0a0c)] shadow-[0_0_0_1px_rgba(10,10,12,0.9),0_0_18px_rgba(212,72,59,0.28),0_24px_40px_-18px_rgba(0,0,0,0.85)]">
+                <Image
+                  src={imageFailed ? "/portrait-placeholder.svg" : heroImages.portrait.src}
+                  alt={heroImages.portrait.alt}
+                  fill
+                  unoptimized={imageFailed}
+                  onError={() => setImageFailed(true)}
+                  sizes="256px"
+                  className="object-cover object-top contrast-[1.05] saturate-[0.9]"
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_50%,rgba(10,10,12,0.5)_100%)]" />
+                {/* edge highlight and inset ring */}
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.03)_26%,transparent_44%)]" />
+                <div className="absolute inset-[3px] rounded-[2px] border border-paper/15" />
+                <div className="film-grain" />
+              </div>
+              {/* corner accents */}
+              <span className="absolute -left-1.5 -top-1.5 h-3 w-3 border-l border-t border-crimson-text" style={{ transform: "translateZ(18px)" }} aria-hidden />
+              <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 border-b border-r border-crimson-text" style={{ transform: "translateZ(18px)" }} aria-hidden />
+            </div>
           </motion.div>
 
           <svg viewBox="-30 -30 160 185" className="pointer-events-none absolute -inset-[30%] overflow-visible" aria-hidden>
@@ -217,7 +255,7 @@ export default function AboutWeb({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.55 }}
-          className="font-mono text-nav tracking-[0.16em] text-paper-body"
+          className="absolute inset-x-0 top-full mt-3 text-center font-mono text-nav tracking-[0.16em] text-paper-body"
         >
           PAVAN
         </motion.span>

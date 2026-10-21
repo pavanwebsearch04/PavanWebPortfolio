@@ -69,6 +69,12 @@ export default function AboutNode({
   const { springDx, springDy } = useNodeTension(node, pointerX, pointerY, interactive);
 
   return (
+    // framer-motion's inline transform (springs / scale) overrides a Tailwind translate
+    // on the button itself, so the centering lives on this wrapper
+    <div
+      className="absolute hidden min-[480px]:block -translate-x-1/2 -translate-y-1/2"
+      style={{ left: `${(node.x / 800) * 100}%`, top: `${(node.y / 800) * 100}%` }}
+    >
     <motion.button
       type="button"
       onMouseEnter={() => onActivate(node.id)}
@@ -77,17 +83,12 @@ export default function AboutNode({
       onBlur={() => onActivate(null)}
       aria-label={`${label} — part of the personal web`}
       aria-pressed={active}
-      style={{
-        left: `${(node.x / 800) * 100}%`,
-        top: `${(node.y / 800) * 100}%`,
-        x: springDx,
-        y: springDy,
-      }}
+      style={{ x: springDx, y: springDy }}
       initial={{ scale: 0, opacity: 0 }}
       whileInView={{ scale: 1, opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="absolute hidden min-[480px]:flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 rounded-sm focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crimson-bright"
+      className="flex flex-col items-center gap-1.5 rounded-sm focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crimson-bright"
     >
       <NodeGlyph id={node.id} active={active} />
       <motion.span
@@ -98,5 +99,6 @@ export default function AboutNode({
         {label}
       </motion.span>
     </motion.button>
+    </div>
   );
 }
