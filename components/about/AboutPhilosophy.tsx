@@ -24,7 +24,7 @@ export default function AboutPhilosophy() {
         ariaLabel="What I bring"
         items={["CODE", "DESIGN", "WORDPRESS", "REACT", "CREATIVITY", "PROBLEM SOLVING"]}
         itemClassName="font-display text-[clamp(2.75rem,2rem+5vw,6rem)] font-medium leading-none text-transparent [-webkit-text-stroke:1px_rgba(242,239,232,0.4)]"
-        className="mt-20 md:mt-28"
+        className="mt-16 md:mt-20"
       />
 
       <div className="mt-16 flex flex-col items-start gap-3 border-t border-paper/20 pt-12 md:mt-20">

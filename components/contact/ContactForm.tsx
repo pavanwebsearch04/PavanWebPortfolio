@@ -27,7 +27,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[\d\s().-]{7,20}$/;
 const phoneDigits = (v: string) => v.replace(/\D/g, "").length;
 
-// The nine services, then "Something else". The API route builds the same
+// The five services, then "Something else". The API route builds the same
 // list from data/services.ts, so the two can never drift apart.
 const PROJECT_TYPES = [...services.map((s) => s.title), "Something else"];
 

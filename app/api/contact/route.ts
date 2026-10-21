@@ -13,7 +13,7 @@ import { services } from "@/data/services";
 export const dynamic = "force-dynamic";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// the nine services plus "Something else": the same list the form offers
+// the five services plus "Something else": the same list the form offers
 const PROJECT_TYPES = [...services.map((s) => s.title), "Something else"];
 const PHONE_RE = /^\+?[\d\s().-]{7,20}$/;
 

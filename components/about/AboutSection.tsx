@@ -55,7 +55,7 @@ export default function AboutSection() {
       className="surface surface-graphite relative w-full overflow-x-clip px-6 py-24 md:px-14 md:py-32 lg:px-20"
     >
       <div className="relative z-10 mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:grid-rows-2 lg:gap-x-12 lg:gap-y-10">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:grid-rows-[auto_auto] lg:gap-x-12 lg:gap-y-10">
           <div className="lg:col-start-1 lg:row-start-1">
             <AboutIntro />
           </div>

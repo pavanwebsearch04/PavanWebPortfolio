@@ -1,26 +1,20 @@
 // Real services only — no invented pricing, stats, or client claims.
+// Five services. Each technology appears under the service it belongs to, so
+// the cards do not repeat one another.
 
-export type ServiceIcon =
-  | "wordpress"
-  | "responsive"
-  | "frontend"
-  | "fullstack"
-  | "database"
-  | "react"
-  | "ecommerce"
-  | "maintenance"
-  | "performance";
+export type ServiceIcon = "wordpress" | "frontend" | "fullstack" | "ecommerce" | "maintenance";
 
 export interface Service {
   id: string;
-  index: string; // "01".."09"
+  index: string; // "01".."05"
   title: string;
+  /** one short sentence; keeps the cards a consistent height */
   description: string;
   capabilities: string[];
   /** what the client gets out of it, in plain language */
   benefit: string;
   icon: ServiceIcon;
-  /** short, relevant technology labels (all backed by data/skills.ts) */
+  /** short technology labels shown as chips (at most six) */
   tech: string[];
 }
 
@@ -29,144 +23,75 @@ export const services: Service[] = [
     id: "wordpress-development",
     index: "01",
     title: "WordPress Development",
-    description:
-      "Custom WordPress websites, theme customization, plugin integration, and manageable business websites.",
+    description: "Custom WordPress websites with tailored themes, plugins and content you can manage yourself.",
     capabilities: [
       "Custom themes and theme customization",
-      "Plugin configuration and integration",
-      "Elementor & Gutenberg layouts",
-      "Content management and website customization",
+      "Plugin integration, Custom Post Types and ACF",
+      "Elementor and Gutenberg page layouts",
+      "WordPress REST API and dynamic content",
     ],
-    benefit: "A site you can manage and update yourself, built around your content.",
+    benefit: "A site you can update yourself, built around your content.",
     icon: "wordpress",
-    tech: ["WordPress", "PHP"],
-  },
-  {
-    id: "responsive-web-design",
-    index: "02",
-    title: "Responsive Web Design",
-    description:
-      "Mobile-first layouts that adapt to desktop, tablet, and mobile screens while maintaining usability and visual consistency.",
-    capabilities: [
-      "Mobile-first layouts",
-      "Responsive navigation",
-      "Cross-browser compatibility",
-      "Accessible interface layouts",
-    ],
-    benefit: "Visitors get a clear, comfortable experience on whatever device they use.",
-    icon: "responsive",
-    tech: ["HTML", "CSS", "JavaScript"],
+    tech: ["WordPress", "Elementor", "Gutenberg", "ACF"],
   },
   {
     id: "frontend-development",
-    index: "03",
+    index: "02",
     title: "Frontend Development",
-    description:
-      "Interactive, accessible interfaces using HTML, CSS, JavaScript, and relevant frontend frameworks.",
+    description: "Responsive, accessible interfaces that look right and work smoothly on every screen.",
     capabilities: [
-      "HTML, CSS & JavaScript",
-      "Interactive UI components",
-      "Form validation",
-      "React integration where applicable",
+      "Mobile-first, responsive layouts",
+      "HTML5, CSS3 and JavaScript interfaces",
+      "Tailwind CSS and Bootstrap styling",
+      "Accessible navigation, forms and validation",
     ],
-    benefit: "Interfaces that feel responsive and are straightforward to maintain.",
+    benefit: "A clear, comfortable experience on whatever device visitors use.",
     icon: "frontend",
-    tech: ["HTML", "CSS", "JavaScript"],
+    tech: ["HTML", "CSS", "JavaScript", "Tailwind CSS", "Bootstrap"],
   },
   {
     id: "full-stack-web-development",
-    index: "04",
+    index: "03",
     title: "Full-Stack Web Development",
-    description:
-      "Complete web applications combining frontend interfaces, backend functionality, API integration, and database connectivity.",
+    description: "Complete web applications, from interface to database, on PHP and Laravel or the MERN stack.",
     capabilities: [
-      "Frontend and backend integration",
-      "Server-side application logic (PHP, Node.js)",
-      "REST API integration",
-      "Database connectivity (MySQL, MongoDB)",
+      "PHP, Laravel, MySQL and SQL back ends",
+      "React.js and Next.js front ends",
+      "Node.js, Express.js and MongoDB (MERN stack)",
+      "Backend logic, REST APIs and database integration",
     ],
-    benefit: "One developer handling both the interface and the logic behind it.",
+    benefit: "One developer for the interface, the logic and the data behind it.",
     icon: "fullstack",
-    tech: ["PHP", "React", "APIs"],
-  },
-  {
-    id: "php-mysql-development",
-    index: "05",
-    title: "PHP & MySQL Development",
-    description:
-      "Dynamic PHP applications, MySQL database integration, authentication, CRUD functionality, and custom admin panels.",
-    capabilities: [
-      "Database design and queries",
-      "CRUD functionality",
-      "Authentication and authorization",
-      "Admin dashboards",
-    ],
-    benefit: "Data-driven features and admin tools you can use day to day.",
-    icon: "database",
-    tech: ["PHP", "MySQL"],
-  },
-  {
-    id: "react-nextjs-development",
-    index: "06",
-    title: "React & Next.js Development",
-    description:
-      "Modern component-based interfaces, reusable components, routing, and Next.js applications.",
-    capabilities: [
-      "Reusable React components",
-      "Next.js routing",
-      "API integration",
-      "Rendering and loading optimization",
-    ],
-    benefit: "Interfaces built from reusable parts that stay easy to extend.",
-    icon: "react",
-    tech: ["React", "Next.js"],
+    tech: ["PHP & Laravel", "MySQL & SQL", "React & Next.js", "Node.js & Express", "MongoDB", "MERN Stack"],
   },
   {
     id: "ecommerce-development",
-    index: "07",
-    title: "E-commerce Website Development",
-    description:
-      "Online stores with product catalogs, product detail pages, shopping carts, checkout integration, and order management.",
+    index: "04",
+    title: "E-commerce Development",
+    description: "Online stores with product catalogs, carts, secure checkout and order management.",
     capabilities: [
-      "Product catalogs",
-      "Shopping cart functionality",
-      "Checkout and payment gateway integration",
-      "Order management",
+      "Product catalogs and detail pages",
+      "Shopping cart and checkout flow",
+      "Payment gateway integration",
+      "Order management and WooCommerce setup",
     ],
     benefit: "A store where customers can browse and order, and you can manage what comes in.",
     icon: "ecommerce",
-    tech: ["PHP", "MySQL", "APIs"],
+    tech: ["WooCommerce", "Cart & Checkout", "Payment Gateways", "Order Management"],
   },
   {
-    id: "website-maintenance",
-    index: "08",
-    title: "Website Maintenance",
-    description:
-      "Content updates, bug fixes, compatibility checks, security improvements, and ongoing technical support.",
+    id: "website-maintenance-optimization",
+    index: "05",
+    title: "Website Maintenance & Optimization",
+    description: "Updates, fixes and security care, plus speed improvements checked against real measurements.",
     capabilities: [
-      "Bug fixing",
-      "Content updates",
-      "Dependency and compatibility checks",
-      "Backup and security maintenance",
+      "Bug fixes and content updates",
+      "Backups, security and compatibility checks",
+      "Image and asset loading optimization",
+      "Core Web Vitals analysis and testing",
     ],
-    benefit: "Fewer surprises: issues get fixed and the site keeps working as things change.",
+    benefit: "Fewer surprises and a faster-feeling site, with changes verified by testing.",
     icon: "maintenance",
-    tech: ["Maintenance", "Bug Fixes"],
-  },
-  {
-    id: "website-optimization",
-    index: "09",
-    title: "Website Performance Optimization",
-    description:
-      "Website speed improvements, image optimization, performance audits, and Core Web Vitals improvements. Results are measured after testing, not promised in advance.",
-    capabilities: [
-      "Image optimization",
-      "Asset loading improvements",
-      "Core Web Vitals analysis",
-      "Performance testing and verification",
-    ],
-    benefit: "A faster-feeling site, with changes checked against real measurements.",
-    icon: "performance",
-    tech: ["Speed", "Core Web Vitals"],
+    tech: ["Bug Fixes", "Security", "Speed", "Core Web Vitals"],
   },
 ];

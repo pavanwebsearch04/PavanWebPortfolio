@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, Code2, Database, Gauge, Layers, MonitorSmartphone, PanelsTopLeft, ShoppingCart, Wrench } from "lucide-react";
+import { ChevronDown, Code2, Layers, PanelsTopLeft, ShoppingCart, Wrench } from "lucide-react";
 import { mulberry32, rangeFrom } from "@/lib/seededRandom";
 import { Service, ServiceIcon } from "@/data/services";
 import WebCorner from "@/components/web/WebCorner";
@@ -52,19 +52,6 @@ function NodeGlyph({ id, active }: { id: string; active: boolean }) {
   );
 }
 
-// React atom mark, drawn as an outline with the same stroke weight as the
-// lucide icons so the set reads as one family.
-function ReactMark() {
-  return (
-    <svg width="26" height="26" viewBox="-12 -12 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <circle r="1.8" fill="currentColor" stroke="none" />
-      <ellipse rx="10.5" ry="4.2" />
-      <ellipse rx="10.5" ry="4.2" transform="rotate(60)" />
-      <ellipse rx="10.5" ry="4.2" transform="rotate(120)" />
-    </svg>
-  );
-}
-
 // WordPress has no lucide glyph; a CMS-style page-layout icon stands in
 // rather than a hand-drawn imitation of the official logo.
 function ServiceIconGlyph({ icon }: { icon: ServiceIcon }) {
@@ -72,22 +59,14 @@ function ServiceIconGlyph({ icon }: { icon: ServiceIcon }) {
   switch (icon) {
     case "wordpress":
       return <PanelsTopLeft {...p} />;
-    case "responsive":
-      return <MonitorSmartphone {...p} />;
     case "frontend":
       return <Code2 {...p} />;
     case "fullstack":
       return <Layers {...p} />;
-    case "database":
-      return <Database {...p} />;
-    case "react":
-      return <ReactMark />;
     case "ecommerce":
       return <ShoppingCart {...p} />;
     case "maintenance":
       return <Wrench {...p} />;
-    case "performance":
-      return <Gauge {...p} />;
   }
 }
 

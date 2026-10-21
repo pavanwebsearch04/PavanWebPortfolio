@@ -85,7 +85,7 @@ export default function HeroPortrait({
     <motion.div
       initial={{ opacity: 0, scale: 1.06 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 1.1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
       style={{ y: scrollY, scale: scrollScale, x: px, translateY: py }}
       data-hero-avoid="22"
       className="relative mx-auto aspect-[4/5] w-[62%] max-w-[360px] md:w-[70%]"
@@ -156,7 +156,7 @@ export default function HeroPortrait({
           <motion.div
             initial={{ clipPath: "inset(38% 30% 38% 30% round 4px)" }}
             animate={{ clipPath: "inset(0% 0% 0% 0% round 4px)" }}
-            transition={{ duration: 1.1, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="hero3d-panel overflow-hidden rounded-[3px] border border-crimson-bright/80 shadow-[0_0_0_1px_rgba(212,72,59,0.25),0_0_22px_rgba(212,72,59,0.45),0_30px_60px_-20px_rgba(0,0,0,0.85)]"
           >
             <Image

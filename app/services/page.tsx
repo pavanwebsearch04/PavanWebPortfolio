@@ -4,9 +4,9 @@ import ServicesSection from "@/components/services/ServicesSection";
 import PageFooter from "@/components/footer/PageFooter";
 
 export const metadata: Metadata = {
-  title: "Services — WordPress & Responsive Web Design | Pavan Vasita",
+  title: "Services — WordPress, Frontend & Full-Stack Development | Pavan Vasita",
   description:
-    "Web services from Pavan Vasita in Udaipur, Rajasthan: WordPress development, responsive web design, frontend development, custom WordPress solutions, website maintenance and performance optimization.",
+    "Web services from Pavan Vasita in Udaipur, Rajasthan: WordPress development, frontend development, full-stack web development with PHP, Laravel and the MERN stack, e-commerce development, and website maintenance and optimization.",
 };
 
 export default function Page() {
