@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { EASE_OUT } from "@/lib/motion";
 
@@ -11,6 +11,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const [animateIn] = useState(
     () => typeof window !== "undefined" && (window as unknown as { __pvNav?: boolean }).__pvNav === true
   );
+  // the flag only covers the navigation that set it, so back/forward and later
+  // loads never start hidden
+  useEffect(() => {
+    (window as unknown as { __pvNav?: boolean }).__pvNav = false;
+  }, []);
   return (
     <motion.div
       initial={animateIn ? { opacity: 0, y: 40 } : false}

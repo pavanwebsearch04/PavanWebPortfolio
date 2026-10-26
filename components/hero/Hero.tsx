@@ -8,6 +8,7 @@ import { WEB_CANVAS } from "@/lib/webData";
 import HeroContent from "./HeroContent";
 import HeroVisual from "./HeroVisual";
 import HeroWeb from "./HeroWeb";
+import OrbWeb from "./OrbWeb";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -71,6 +72,7 @@ export default function Hero() {
     >
       {/* the web spans the ENTIRE hero, behind both columns */}
       <div className="absolute inset-0 z-0">
+        <OrbWeb />
         <HeroWeb
           pointerX={pointerX}
           pointerY={pointerY}

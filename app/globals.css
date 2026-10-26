@@ -241,7 +241,7 @@ textarea[data-web-active="true"] {
   --chip-border: rgba(242, 239, 232, 0.32);
   --chip-fill: #1d1d24;
   /* gentle spring: a slight overshoot, no bounce */
-  transition: transform 0.38s cubic-bezier(0.34, 1.45, 0.64, 1), filter 0.3s ease;
+  transition: transform 0.38s var(--ease-spring), filter 0.3s ease;
   will-change: transform;
 }
 .skill-chip::before,
@@ -344,7 +344,7 @@ textarea[data-web-active="true"] {
 .skills-web .sw-route {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: sw-draw 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: sw-draw 0.6s var(--ease-out) forwards;
 }
 
 /* a short bright dash that rides each active route, one pass at a time */
@@ -397,7 +397,7 @@ textarea[data-web-active="true"] {
   opacity: 0.62;
 }
 .skill-chip {
-  transition: transform 0.38s cubic-bezier(0.34, 1.45, 0.64, 1), filter 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.38s var(--ease-spring), filter 0.3s ease, opacity 0.3s ease;
 }
 
 /* ------------------------------------------------------------------ */
@@ -617,7 +617,7 @@ textarea[data-web-active="true"] {
 }
 @media (prefers-reduced-motion: no-preference) {
   .about-frame {
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.6s var(--ease-out);
   }
   .about-scene:hover .about-frame {
     transform: rotateY(-3deg) rotateX(1deg) translateY(-3px);
@@ -695,7 +695,7 @@ textarea:focus-visible {
 }
 .line-fade-word {
   opacity: 0;
-  animation: line-fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) forwards;
+  animation: line-fade-in 0.7s var(--ease-out) var(--d, 0s) forwards;
 }
 
 @keyframes hero-sway {
@@ -746,7 +746,7 @@ textarea:focus-visible {
   border-radius: 9999px;
   border: 1px solid rgba(238, 108, 92, 0.7);
   box-shadow: 0 0 24px rgba(212, 72, 59, 0.25);
-  animation: hero-ripple 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: hero-ripple 1s var(--ease-out) forwards;
 }
 
 @keyframes scroll-cue {
@@ -758,7 +758,7 @@ textarea:focus-visible {
   }
 }
 .scroll-cue {
-  animation: scroll-cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation: scroll-cue 2.2s var(--ease-in-out) infinite;
 }
 
 @keyframes avail-ping {
@@ -773,14 +773,14 @@ textarea:focus-visible {
   }
 }
 .avail-ping {
-  animation: avail-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: avail-ping 2.2s var(--ease-out) infinite;
 }
 
 /* ---- project card border strand ---- */
 .card-strand {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  transition: stroke-dashoffset 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: stroke-dashoffset 700ms var(--ease-out);
 }
 .group:hover .card-strand,
 .group:focus-visible .card-strand {
@@ -827,7 +827,7 @@ textarea:focus-visible {
   }
 }
 .skills-web .sw-in {
-  animation: sw-in 1000ms cubic-bezier(0.34, 1.4, 0.64, 1) var(--ed, 0s) both;
+  animation: sw-in 1000ms var(--ease-spring) var(--ed, 0s) both;
 }
 @keyframes sw-draw {
   from {
@@ -842,7 +842,7 @@ textarea:focus-visible {
   stroke-dashoffset: 1;
 }
 .skills-web[data-entered="true"] .sw-draw {
-  animation: sw-draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: sw-draw 1.4s var(--ease-in-out) both;
 }
 @keyframes sw-drift {
   0%,
@@ -883,7 +883,7 @@ textarea:focus-visible {
 }
 .svc-icon {
   display: inline-flex;
-  transition: transform 0.45s cubic-bezier(0.34, 1.45, 0.64, 1);
+  transition: transform 0.45s var(--ease-spring);
 }
 .svc-card:hover .svc-icon[data-icon="wordpress"] { transform: rotate(-8deg) scale(1.12); }
 .svc-card:hover .svc-icon[data-icon="frontend"] { transform: translateX(3px); }
@@ -894,7 +894,7 @@ textarea:focus-visible {
 /* ---- about portrait: outline frame + floating icons ---- */
 .about-outline {
   transform: translate3d(10px, 10px, -8px);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s var(--ease-out);
 }
 .about-scene:hover .about-outline {
   transform: translate3d(22px, 22px, -8px);
@@ -927,7 +927,7 @@ textarea:focus-visible {
   }
 }
 .roll-num {
-  animation: roll-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: roll-in 0.45s var(--ease-out);
 }
 @keyframes piece-pop {
   0% {
@@ -941,7 +941,7 @@ textarea:focus-visible {
   }
 }
 .piece-pop {
-  animation: piece-pop 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+  animation: piece-pop 0.4s var(--ease-spring);
 }
 @keyframes win-draw {
   from {
@@ -953,7 +953,7 @@ textarea:focus-visible {
 }
 .win-strand {
   stroke-dasharray: 1;
-  animation: win-draw 0.35s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: win-draw 0.35s var(--ease-in-out) both;
 }
 
 /* ---- contact form ---- */
@@ -962,7 +962,7 @@ textarea:focus-visible {
   background-repeat: no-repeat;
   background-position: 50% 100%;
   background-size: 0% 1px;
-  transition: background-size 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  transition: background-size 0.35s var(--ease-out), border-color 0.25s ease;
 }
 .form-field:focus {
   background-size: 100% 1px;
@@ -1019,7 +1019,7 @@ textarea:focus-visible {
 }
 .tick-draw {
   stroke-dasharray: 1;
-  animation: tick-draw 0.4s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: tick-draw 0.4s var(--ease-in-out) both;
 }
 @keyframes btn-spin {
   to {
@@ -1115,7 +1115,7 @@ textarea:focus-visible {
 }
 .ns-letter {
   opacity: 0;
-  animation: ns-letter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ns-letter 0.55s var(--ease-out) both;
 }
 @keyframes ns-drop {
   0% {
@@ -1130,7 +1130,7 @@ textarea:focus-visible {
 }
 .ns-drop {
   transform: translateY(-34vh);
-  animation: ns-drop 0.8s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  animation: ns-drop 0.8s var(--ease-spring) both;
 }
 @keyframes ns-crawl {
   0% {
@@ -1211,7 +1211,7 @@ textarea:focus-visible {
 .ns-strand {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: ns-strand 0.8s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: ns-strand 0.8s var(--ease-in-out) both;
 }
 @keyframes ns-drip {
   0% {
@@ -1228,5 +1228,27 @@ textarea:focus-visible {
 }
 .ns-drip {
   transform: scaleY(0);
-  animation: ns-drip 1.4s cubic-bezier(0.5, 0, 0.3, 1) both;
+  animation: ns-drip 1.4s var(--ease-in-out) both;
+}
+
+/* hero orb web: draw-in, dew pop, idle sway */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.2, 0.64, 1);
+  --dur-hover: 150ms;
+  --dur-reveal: 500ms;
+  --dur-draw: 1000ms;
+  --dur-ambient: 6s;
+}
+.orb-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: orb-draw 1s var(--ease-out) forwards; }
+@keyframes orb-draw { to { stroke-dashoffset: 0; } }
+.orb-dew { opacity: 0; transform-box: fill-box; transform-origin: center; animation: orb-dew 400ms var(--ease-spring) forwards; }
+@keyframes orb-dew { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: scale(1); } }
+.orb-web-sway { transform-origin: 70% 53%; transform-box: view-box; animation: orb-sway 6s var(--ease-in-out) 1.6s infinite alternate; }
+@keyframes orb-sway { from { transform: rotate(-0.4deg); } to { transform: rotate(0.4deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .orb-draw { animation: none; stroke-dashoffset: 0; }
+  .orb-dew { animation: none; opacity: 1; }
+  .orb-web-sway { animation: none; }
 }

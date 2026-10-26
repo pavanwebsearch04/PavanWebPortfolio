@@ -69,8 +69,8 @@ export default function Header() {
 
   const NAV_ITEMS: NavItem[] = [
     ...SECTION_NAV.map((i) => ({ ...i, href: section(i.id) })),
-    { id: "lab", label: "LAB", index: "07", href: section("lab") },
-    { id: "contact", label: "CONTACT", index: "08", href: section("contact") },
+    { id: "lab", label: "LAB", index: "06", href: section("lab") },
+    { id: "contact", label: "CONTACT", index: "07", href: section("contact") },
   ];
 
   const pointerXRaw = useMotionValue(-1000);
