@@ -26,7 +26,7 @@ export default function LabSection({ full = false }: { full?: boolean }) {
               transition={{ duration: 0.5 }}
               className="font-mono text-label tracking-[0.14em] text-paper-muted"
             >
-              07 / EXPERIMENTS
+              06 / EXPERIMENTS
             </motion.p>
           </div>
 

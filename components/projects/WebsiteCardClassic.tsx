@@ -126,6 +126,7 @@ export default function WebsiteCard({
             {/* screenshot — 16:10 reserves the space before the image loads */}
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-paper/15 bg-ink-graphite">
               {image && !imageFailed ? (
+                <span className="absolute inset-x-0 top-0 block h-[150%] w-full transition-transform duration-150 ease-[var(--ease-in-out)] will-change-transform [@media(hover:hover)]:group-hover:-translate-y-[33.3%] [@media(hover:hover)]:group-hover:duration-[6000ms] motion-reduce:!transition-none motion-reduce:!transform-none">
                 <Image
                   src={image.src}
                   alt={image.alt}
@@ -134,9 +135,9 @@ export default function WebsiteCard({
                   priority={eager}
                   loading={eager ? undefined : "lazy"}
                   onError={() => setImageFailed(true)}
-                  style={{ objectPosition: image.position }}
-                  className={`object-cover transition-transform duration-[900ms] ${EASE} will-change-transform group-hover:scale-[1.045] group-focus-visible:scale-[1.045] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
+                  className="object-cover object-top"
                 />
+                </span>
               ) : (
                 // no capture available: an honest typographic stand-in, never a stock photo
                 <div

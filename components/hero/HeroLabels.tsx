@@ -57,7 +57,11 @@ export default function HeroLabels({
             } as React.CSSProperties
           }
         >
-          <span className="block w-px bg-gradient-to-b from-paper/0 via-paper/30 to-paper/45" style={{ height: l.drop }} />
+          {/* thread leaves a junction on the web frame and sags slightly on the way down */}
+          <svg width="14" height={l.drop} viewBox={`0 0 14 ${l.drop}`} className="block overflow-visible">
+            <path d={`M7 0 Q ${l.amp > 2.5 ? 12 : 2} ${l.drop / 2} 7 ${l.drop}`} fill="none" stroke="#EDEAE3" strokeOpacity={0.4} strokeWidth={0.8} />
+            <circle cx="7" cy="0" r="2" fill="#D4483B" fillOpacity={0.85} />
+          </svg>
           <span className="border border-crimson-bright/40 bg-ink/80 px-2.5 py-1 font-mono text-[0.68rem] tracking-[0.12em] text-paper-body shadow-[0_0_14px_rgba(212,72,59,0.22)]">
             {l.text}
           </span>

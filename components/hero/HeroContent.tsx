@@ -53,7 +53,7 @@ export default function HeroContent({
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
           data-hero-avoid=""
           className="flex flex-col gap-1.5"
         >
@@ -73,9 +73,9 @@ export default function HeroContent({
             <span key={line} className="block overflow-hidden">
               <motion.span
                 className="block"
-                initial={{ y: "110%", filter: "blur(10px)" }}
+                initial={{ y: "110%", filter: "blur(6px)" }}
                 animate={{ y: "0%", filter: "blur(0px)" }}
-                transition={{ duration: 0.75, delay: 0.38 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.45, delay: 0.1 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
               >
                 {i === HEADLINE_LINES.length - 1 ? (
                   <span className="relative inline-block">
@@ -86,7 +86,7 @@ export default function HeroContent({
                       className="pointer-events-none absolute inset-0 text-crimson-bright blur-[8px]"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: [0, 0.85, 0] }}
-                      transition={{ duration: 1.4, delay: 0.38 + i * 0.07 + 0.75, ease: "easeInOut" }}
+                      transition={{ duration: 1.4, delay: 0.1 + i * 0.05 + 0.45, ease: [0.65, 0, 0.35, 1] }}
                     >
                       {line}
                     </motion.span>
@@ -103,7 +103,7 @@ export default function HeroContent({
       <ParallaxLayer parallaxX={parallaxX} parallaxY={parallaxY} strength={6}>
         <div data-hero-avoid="">
           <LineFade
-            delay={0.85}
+            delay={0.3}
             text="I’m Pavan Vasita, a Web Developer specializing in PHP, MySQL, React, WordPress, and modern web technologies. I build responsive websites, clean interfaces, and practical digital solutions that bring ideas to life."
             className="max-w-xl text-pretty font-body text-body text-paper-body"
           />
@@ -114,7 +114,7 @@ export default function HeroContent({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.95 }}
+          transition={{ duration: 0.45, delay: 0.4 }}
           data-hero-avoid=""
           className="flex flex-wrap items-center gap-4"
         >
@@ -143,7 +143,7 @@ export default function HeroContent({
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.1 }}
+          transition={{ duration: 0.45, delay: 0.5 }}
           data-hero-avoid=""
           className="flex flex-col gap-1.5 font-mono text-label tracking-[0.1em] text-paper-dim"
         >

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { DUR, EASE_OUT, REVEAL_RISE } from "@/lib/motion";
@@ -21,6 +22,12 @@ export default function Reveal({
 }) {
   const reduced = useReducedMotion();
   const Tag = motion[as];
+  // safety net: never leave content blank if the observer is slow or skipped
+  const [forced, setForced] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setForced(true), 1500 + delay * 1000);
+    return () => window.clearTimeout(t);
+  }, [delay]);
 
   return (
     <Tag
@@ -28,6 +35,7 @@ export default function Reveal({
       className={className}
       initial={reduced ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
+      animate={forced ? { opacity: 1, y: 0 } : undefined}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: DUR.reveal, delay, ease: EASE_OUT }}
     >
