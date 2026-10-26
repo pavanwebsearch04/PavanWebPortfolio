@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import NameSpiders from "./NameSpiders";
+import { getLenis } from "@/lib/lenisRef";
 
 // Route transition: a dark curtain with a crimson leading edge wipes up over
 // the page, shows PAVAN VASITA with spiders, then wipes away once the new
@@ -62,6 +63,9 @@ export default function PageTransition() {
   useEffect(() => {
     pathRef.current = pathname;
     if (!s.current.active || pathname === startPath.current) return;
+    // through Lenis when it is running, so it does not glide back to the old spot
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
     window.scrollTo(0, 0);
     s.current.arrived = true;
     maybeReveal();
