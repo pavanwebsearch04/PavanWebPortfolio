@@ -18,10 +18,10 @@ import { useSiteLinks } from "@/hooks/useSiteLinks";
 const SECTION_NAV = [
   { id: "hero", label: "HOME", index: "01" },
   { id: "work", label: "WORK", index: "02" },
-  { id: "experience", label: "EXPERIENCE", index: "03" },
-  { id: "skills", label: "SKILLS", index: "04" },
-  { id: "services", label: "SERVICES", index: "05" },
-  { id: "about", label: "ABOUT", index: "06" },
+  { id: "about", label: "ABOUT", index: "03" },
+  { id: "experience", label: "EXPERIENCE", index: "04" },
+  { id: "skills", label: "SKILLS", index: "05" },
+  { id: "services", label: "SERVICES", index: "06" },
 ];
 
 // Three short irregular strands that straighten into a close (X) icon —
@@ -69,8 +69,8 @@ export default function Header() {
 
   const NAV_ITEMS: NavItem[] = [
     ...SECTION_NAV.map((i) => ({ ...i, href: section(i.id) })),
-    { id: "lab", label: "LAB", index: "06", href: section("lab") },
-    { id: "contact", label: "CONTACT", index: "07", href: section("contact") },
+    { id: "lab", label: "LAB", index: "07", href: section("lab") },
+    { id: "contact", label: "CONTACT", index: "08", href: section("contact") },
   ];
 
   const pointerXRaw = useMotionValue(-1000);

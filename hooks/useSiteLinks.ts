@@ -7,10 +7,10 @@ import { usePathname } from "next/navigation";
 export const ROUTES: Record<string, string> = {
   hero: "/",
   work: "/projects",
+  about: "/about",
   experience: "/experience",
   skills: "/skills",
   services: "/services",
-  about: "/about",
   lab: "/lab",
   contact: "/contact",
 };

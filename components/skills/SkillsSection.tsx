@@ -25,7 +25,7 @@ export default function SkillsSection() {
               transition={{ duration: 0.5 }}
               className="font-mono text-label tracking-[0.14em] text-paper-muted"
             >
-              03 / SKILLS
+              04 / SKILLS
             </motion.p>
             <motion.span
               initial={{ opacity: 0 }}

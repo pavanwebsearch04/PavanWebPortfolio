@@ -25,7 +25,7 @@ export default function ExperienceSection() {
               transition={{ duration: 0.5 }}
               className="font-mono text-label tracking-[0.14em] text-paper-muted"
             >
-              02 / EXPERIENCE
+              03 / EXPERIENCE
             </motion.p>
           </div>
 

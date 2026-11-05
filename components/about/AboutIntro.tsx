@@ -16,7 +16,7 @@ export default function AboutIntro() {
           transition={{ duration: 0.5 }}
           className="font-mono text-label tracking-[0.14em] text-paper-muted"
         >
-          05 / ABOUT
+          02 / ABOUT
         </motion.p>
       </div>
 

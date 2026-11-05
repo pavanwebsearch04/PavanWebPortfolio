@@ -34,10 +34,10 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
       <Hero />
       <SelectedWork />
+      <AboutSection />
       <ExperienceSection />
       <SkillsSection />
       <ServicesSection />
-      <AboutSection />
       <LabSection />
       <ContactSection />
     </SiteShell>
