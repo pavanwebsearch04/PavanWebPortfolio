@@ -153,10 +153,8 @@ export default function WebsiteCard({
             {/* screenshot — 16:10 reserves the space before the image loads */}
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-paper/15 bg-ink-graphite">
               {image && !imageFailed ? (
-                // scale 1.3 -> 1 as the card is revealed on scroll
-                <div
-                  className={`absolute inset-0 scale-[1.3] transition-transform duration-[1200ms] ${EASE} group-data-[shown=true]/reveal:scale-100 motion-reduce:scale-100 motion-reduce:transition-none`}
-                >
+                // shown whole: no zoom, so the full homepage hero is always visible
+                <div className="absolute inset-0">
                   <Image
                     src={image.src}
                     alt={image.alt}
@@ -166,7 +164,7 @@ export default function WebsiteCard({
                     loading={eager ? undefined : "lazy"}
                     onError={() => setImageFailed(true)}
                     style={{ objectPosition: image.position }}
-                    className={`object-cover transition-transform duration-[600ms] ${EASE} will-change-transform group-hover:scale-[1.06] group-focus-visible:scale-[1.06] motion-reduce:transition-none motion-reduce:group-hover:scale-100 motion-reduce:group-focus-visible:scale-100`}
+                    className="object-cover"
                   />
                 </div>
               ) : (
