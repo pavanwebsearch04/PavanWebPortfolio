@@ -126,7 +126,7 @@ export default function WebsiteCard({
             {/* screenshot — 16:10 reserves the space before the image loads */}
             <div className="relative aspect-[16/10] w-full overflow-hidden border border-paper/15 bg-ink-graphite">
               {image && !imageFailed ? (
-                <span className="absolute inset-x-0 top-0 block h-[150%] w-full transition-transform duration-150 ease-[var(--ease-in-out)] will-change-transform [@media(hover:hover)]:group-hover:-translate-y-[33.3%] [@media(hover:hover)]:group-hover:duration-[6000ms] motion-reduce:!transition-none motion-reduce:!transform-none">
+                <span className="absolute inset-0 block h-full w-full">
                 <Image
                   src={image.src}
                   alt={image.alt}
