@@ -77,7 +77,7 @@ const projectList: WebsiteProject[] = [
     },
     technologies: ["WordPress", "Elementor"],
     featured: false,
-    sortOrder: 1,
+    sortOrder: 8,
     status: "live",
   },
   {
@@ -94,8 +94,8 @@ const projectList: WebsiteProject[] = [
       position: "30% 50%",
     },
     featured: true,
-    featuredOrder: 3,
-    sortOrder: 2,
+    featuredOrder: 6,
+    sortOrder: 6,
     status: "live",
   },
   {
@@ -113,8 +113,8 @@ const projectList: WebsiteProject[] = [
       position: "20% 50%",
     },
     featured: true,
-    featuredOrder: 4,
-    sortOrder: 3,
+    featuredOrder: 2,
+    sortOrder: 2,
     status: "live",
   },
   {
@@ -132,7 +132,7 @@ const projectList: WebsiteProject[] = [
       position: "50% 50%",
     },
     featured: false,
-    sortOrder: 5,
+    sortOrder: 9,
     status: "live",
   },
   {
@@ -151,7 +151,7 @@ const projectList: WebsiteProject[] = [
     },
     technologies: ["WordPress", "Elementor"],
     featured: false,
-    sortOrder: 6,
+    sortOrder: 10,
     status: "live",
   },
   {
@@ -170,7 +170,7 @@ const projectList: WebsiteProject[] = [
     },
     technologies: ["WordPress", "WooCommerce", "Elementor"],
     featured: false,
-    sortOrder: 7,
+    sortOrder: 11,
     status: "live",
   },
   {
@@ -188,8 +188,8 @@ const projectList: WebsiteProject[] = [
       position: "20% 50%",
     },
     featured: true,
-    featuredOrder: 5,
-    sortOrder: 8,
+    featuredOrder: 4,
+    sortOrder: 4,
     status: "live",
   },
   {
@@ -207,7 +207,7 @@ const projectList: WebsiteProject[] = [
       position: "50% 50%",
     },
     featured: false,
-    sortOrder: 9,
+    sortOrder: 12,
     status: "live",
   },
   {
@@ -225,8 +225,8 @@ const projectList: WebsiteProject[] = [
       position: "30% 50%",
     },
     featured: true,
-    sortOrder: 10,
-    featuredOrder: 7,
+    sortOrder: 3,
+    featuredOrder: 3,
     status: "live",
   },
   {
@@ -244,7 +244,7 @@ const projectList: WebsiteProject[] = [
       position: "50% 50%",
     },
     featured: false,
-    sortOrder: 11,
+    sortOrder: 13,
     status: "live",
   },
   {
@@ -262,8 +262,8 @@ const projectList: WebsiteProject[] = [
       position: "20% 50%",
     },
     featured: true,
-    featuredOrder: 2,
-    sortOrder: 4,
+    featuredOrder: 5,
+    sortOrder: 5,
     status: "live",
   },
   {
@@ -281,8 +281,8 @@ const projectList: WebsiteProject[] = [
       position: "50% 30%",
     },
     featured: true,
-    featuredOrder: 6,
-    sortOrder: 13,
+    featuredOrder: 7,
+    sortOrder: 7,
     status: "live",
   },
   {
@@ -301,7 +301,7 @@ const projectList: WebsiteProject[] = [
     },
     featured: true,
     featuredOrder: 1,
-    sortOrder: 14,
+    sortOrder: 1,
     status: "live",
   },
   {
@@ -318,7 +318,7 @@ const projectList: WebsiteProject[] = [
     host: "webeyez.com",
     technologies: ["WordPress", "Elementor"],
     featured: false,
-    sortOrder: 12,
+    sortOrder: 14,
     status: "live",
   },
 ];
