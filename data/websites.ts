@@ -287,6 +287,24 @@ const projectList: WebsiteProject[] = [
     status: "live",
   },
   {
+    slug: "atman-resort",
+    title: "Atman Resort",
+    category: "Resort Hospitality",
+    group: "Hospitality & Travel",
+    description:
+      "A luxury hill resort website for Udaipur, presenting rooms and suites, weddings and events, dining and experiences, with a clear path to booking a stay.",
+    url: "https://atmanresorts.com/",
+    host: "atmanresorts.com",
+    image: {
+      src: "/projects/atman-resort.webp",
+      alt: "Homepage of Atman Resort: an aerial view of a white resort building and cottages above a lawn behind the headline “Luxury Resort in Udaipur for a Memorable Stay”, with Explore Our Rooms and Plan Your Stay buttons",
+      position: "50% 50%",
+    },
+    featured: false,
+    sortOrder: 14,
+    status: "live",
+  },
+  {
     // No screenshot yet: webeyez.com sits behind a bot-verification challenge
     // that automated capture can't pass. Add public/projects/webeyez.webp
     // (1440x900) and an `image` entry to replace the placeholder.
